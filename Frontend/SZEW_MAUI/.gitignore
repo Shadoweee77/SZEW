@@ -1,0 +1,27 @@
+#Ustawienia Visual Studio
+.vs/
+*.csproj.user
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.dbmdl
+*.log
+*.tlog
+*.njsproj
+
+#Crashe
+mono_crash.*
+
+#.NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+#Buildy
+bin/
+obj/
+
+#Inne IDE
+.vscode/
+.idea/
