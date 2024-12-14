@@ -1,4 +1,4 @@
-# Debugerzy
+# Debuggerzy
 
 Repozytorium projektowe na przedmiot Inżynieria Oprogramowania 2024.
 
