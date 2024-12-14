@@ -1,0 +1,28 @@
+services:
+  szew:
+    container_name: SZEW_Backend
+    image: ${DOCKER_REGISTRY-}szew
+    build:
+      context: .
+      dockerfile: SZEW/Dockerfile
+    environment:
+        DB_HOST: postgres
+        DB_PORT: 5432
+        DB_NAME: ${DATABASE_NAME:-SZEW_DB}
+        DB_USER: ${PG_USER:-SZEW_DB_USER}
+        DB_PASS: ${PG_PASSWORD:-SZEW_DB_PASS}
+
+  postgres:
+    container_name: Postgres_SZEW
+    image: postgres:17.2
+    ports:
+        - 5432:5432
+    environment:
+        POSTGRES_USER: ${PG_USER:-SZEW_DB_USER}
+        POSTGRES_PASSWORD: ${PG_PASSWORD:-SZEW_DB_PASS}
+        POSTGRES_DB: ${DATABASE_NAME:-SZEW_DB}
+    volumes:
+        - db_data:/var/lib/postgresql/data
+
+volumes:
+    db_data:
