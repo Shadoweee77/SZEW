@@ -26,7 +26,7 @@ builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(builder.
 
 //Add test data
 builder.Services.AddTransient<SZEW.TestData>();
-
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add services to the container.
 builder.Services.AddControllers();
 

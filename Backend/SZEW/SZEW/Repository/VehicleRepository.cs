@@ -13,9 +13,29 @@ namespace SZEW.Repository
             this._context = context;
         }
 
+        public Vehicle GetVehicle(int id)
+        {
+            return _context.Vehicles.Where(p => p.Id == id).FirstOrDefault();
+        }
+
+        public Vehicle GetVehicle(string vin)
+        {
+            return _context.Vehicles.Where(p => p.VIN == vin).FirstOrDefault();
+        }
+
         public ICollection<Vehicle> GetVehicles()
         {
             return _context.Vehicles.OrderBy(p => p.Id).ToList();
+        }
+
+        public bool VehicleExists(int id)
+        {
+            return _context.Vehicles.Any(p => p.Id == id);
+        }
+
+        public bool VehicleExists(string vin)
+        {
+            return _context.Vehicles.Any(v => v.VIN == vin);
         }
     }
 }
