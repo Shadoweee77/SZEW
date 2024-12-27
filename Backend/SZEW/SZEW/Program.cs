@@ -1,12 +1,18 @@
+using System.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using Npgsql.PostgresTypes;
 using Scalar.AspNetCore;
 using SZEW.Data;
+using SZEW.Interfaces;
 using SZEW.Models;
+using SZEW.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //DB Connection String
-string dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+//string dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+string dbHost = Dns.GetHostEntry(Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost").AddressList.First().ToString();
 string dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
 string dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "SZEW_DB";
 string dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "SZEW_DB_USER";
@@ -22,15 +28,19 @@ builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(builder.
 builder.Services.AddTransient<SZEW.TestData>();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
+IServiceCollection serviceCollection = builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 if (args.Length == 1 && args[0].ToLower() == "testdata")
+{
     SeedData(app);
+}
 
 void SeedData(IHost app)
 {
@@ -56,7 +66,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", () => "$DB_USER");
+app.MapGet("/", () => builder.Configuration.GetConnectionString("DefaultConnection"));
 
 app.Run();
 
+SeedData(app); //SELECT * FROM "Clients";

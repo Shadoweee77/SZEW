@@ -24,5 +24,8 @@ services:
     volumes:
         - db_data:/var/lib/postgresql/data
 
+networks:
+    SZEW_network:
+
 volumes:
     db_data:
