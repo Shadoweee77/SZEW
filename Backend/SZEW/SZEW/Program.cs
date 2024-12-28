@@ -30,7 +30,9 @@ builder.Services.AddTransient<SZEW.TestData>();
 // Add services to the container.
 builder.Services.AddControllers();
 
-IServiceCollection serviceCollection = builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+IServiceCollection serviceCollection = builder.Services;
+serviceCollection.AddScoped<IVehicleRepository, VehicleRepository>();
+serviceCollection.AddScoped<IWorkshopClientRepository, WorkshopClientRepository>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

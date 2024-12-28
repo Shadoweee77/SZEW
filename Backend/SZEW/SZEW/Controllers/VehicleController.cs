@@ -82,16 +82,16 @@ namespace SZEW.Controllers
         [ProducesResponseType(400)]
         public IActionResult VehicleExists(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest($"Vehicle {id} is not valid");
+            }
+
             if (_vehicleRepository.VehicleExists(id))
             {
                 return Ok(true);
             }
             else return Ok(false);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest($"Vehicle {id} is not valid");
-            }
         }
     }
 }

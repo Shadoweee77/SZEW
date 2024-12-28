@@ -9,6 +9,7 @@ namespace SZEW.Helper
         public MappingProfiles()
         {
             CreateMap<Vehicle, VehicleDto>();
+            CreateMap<WorkshopClient, WorkshopClientDto>();
         }
     }
 }

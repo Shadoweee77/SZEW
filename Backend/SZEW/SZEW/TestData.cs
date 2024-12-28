@@ -1,4 +1,5 @@
-﻿using SZEW.Data;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SZEW.Data;
 using SZEW.Models;
 
 namespace SZEW
@@ -33,7 +34,8 @@ namespace SZEW
                             Address = "123 Elm Street",
                             PhoneNumber = "123-456-7890",
                             Name = "John",
-                            Surname = "Doe"
+                            Surname = "Doe",
+                            ClientType = ClientType.Individual
                         }
                     },
                     new Vehicle()
@@ -52,7 +54,8 @@ namespace SZEW
                             Address = "456 Industry Blvd",
                             PhoneNumber = "800-555-1234",
                             Name = "ACME Corp",
-                            NIP = "1234567890"
+                            NIP = "1234567890",
+                            ClientType = ClientType.Business
                         }
                     },
                     new Vehicle()
@@ -71,7 +74,28 @@ namespace SZEW
                             Address = "789 Oak Avenue",
                             PhoneNumber = "987-654-3210",
                             Name = "Alice",
-                            Surname = "Smith"
+                            Surname = "Smith",
+                            ClientType = ClientType.Individual
+                        }
+                    },
+                    new Vehicle()
+                    {
+                        Id = 4,
+                        Make = "Lamborghini",
+                        Model = "Gallardo",
+                        Year = new DateTime(2009, 12, 10).ToUniversalTime(),
+                        RegistrationNumber = null,
+                        Color = "Black",
+                        VIN = "ABCDE12345AAS2323",
+                        Owner = new WorkshopIndividualClient()
+                        {
+                            Id = 3,
+                            Email = "alice.smith@example.com",
+                            Address = "789 Oak Avenue",
+                            PhoneNumber = "987-654-3210",
+                            Name = "Alice",
+                            Surname = "Smith",
+                            ClientType = ClientType.Individual
                         }
                     }
                 };
