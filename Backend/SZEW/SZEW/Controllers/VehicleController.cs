@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SZEW.DTO;
 using SZEW.Interfaces;
@@ -6,6 +7,7 @@ using SZEW.Models;
 
 namespace SZEW.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]
     [ApiController]
     public class VehicleController : Controller

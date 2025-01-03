@@ -168,7 +168,7 @@ namespace SZEW
                         Name = "Admin",
                         Surname = "One",
                         Email = "admin1@workshop.com",
-                        PasswordHash = "hashed_password_123",
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
                         UserType = UserType.Admin
                     },
                     new User()
@@ -178,7 +178,7 @@ namespace SZEW
                         Name = "Mechanic",
                         Surname = "One",
                         Email = "mechanic1@workshop.com",
-                        PasswordHash = "hashed_password_456",
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("mechanic"),
                         UserType = UserType.Mechanic
                     },
                     new User()

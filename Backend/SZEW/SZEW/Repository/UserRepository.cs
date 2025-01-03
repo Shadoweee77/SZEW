@@ -6,6 +6,11 @@ namespace SZEW.Repository
 {
     public class UserRepository : IUserRepository
     {
+        public User GetByLogin(string login)
+        {
+            return _context.Users.FirstOrDefault(u => u.Login == login);
+        }
+
         private DataContext _context;
 
         public UserRepository(DataContext context)

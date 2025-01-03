@@ -5,6 +5,10 @@ using Scalar.AspNetCore;
 using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +25,32 @@ builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(builder.
 
 // Add test data service
 builder.Services.AddTransient<SZEW.TestData>();
+
+// Add JWT Authentication to the services
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]))
+    };
+});
+
+// Add Authorization to the service collection
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("MechanicOnly", policy => policy.RequireRole("Mechanic"));
+});
 
 // Add repositories to the DI container
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
@@ -60,6 +90,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
