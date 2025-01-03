@@ -13,6 +13,8 @@ namespace SZEW.Data
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<WorkshopClient> Clients { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<WorkshopTask> Tasks {  get; set; }
+        public DbSet<WorkshopJob> Jobs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
