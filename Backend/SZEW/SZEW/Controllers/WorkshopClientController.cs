@@ -69,7 +69,7 @@ namespace SZEW.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetClientType(int id)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !_workshopClientRepository.ClientExists(id))
             {
                 return BadRequest($"Workshop Client {id} is not valid");
             }

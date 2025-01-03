@@ -6,6 +6,7 @@ Otwierasz terminal w katalogu `/Backend/SZEW` i wpisujesz `dotnet restore`. Powi
 
 ### Dane testowe
 W lokalizacji `\Backend\SZEW\SZEW` otwieramy terminal i uruchamiamy polecenie `dotnet run testdata`. Dane testowe powinny zostać dodane do bazy danych, co można sprawdzić kwerendą `SELECT * FROM "Clients"`.
+Istnieje również `dotnet run testdata forced`, która najpierw usuwa wszystkie dane w bazie danych i dodaje je na nowo.
 
 ### Migracje
 W konsoli menedżera pekietów:
