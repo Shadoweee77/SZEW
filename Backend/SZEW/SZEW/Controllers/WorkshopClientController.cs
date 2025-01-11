@@ -2,6 +2,8 @@
 using SZEW.Interfaces;
 using SZEW.Models;
 using SZEW.Repository;
+using AutoMapper;
+using SZEW.DTO;
 
 namespace SZEW.Controllers
 {
@@ -10,17 +12,19 @@ namespace SZEW.Controllers
     public class WorkshopClientController : Controller
     {
         private readonly IWorkshopClientRepository _workshopClientRepository;
-
-        public WorkshopClientController(IWorkshopClientRepository workshopClientRepository)
+        private readonly IMapper _mapper;
+        public WorkshopClientController(IWorkshopClientRepository workshopClientRepository, IMapper mapper)
         {
             this._workshopClientRepository = workshopClientRepository;
+            _mapper = mapper;
+
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<WorkshopClient>))]
         public IActionResult GetClients()
         {
-            var clients = _workshopClientRepository.GetClients();
+            var clients = _mapper.Map<List<WorkshopClientDto>>(_workshopClientRepository.GetClients());
 
             if (!ModelState.IsValid)
             {
@@ -40,7 +44,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var client = _workshopClientRepository.GetClient(id);
+            var client = _mapper.Map<WorkshopClientDto>(_workshopClientRepository.GetClient(id));
 
             if (!ModelState.IsValid)
             {

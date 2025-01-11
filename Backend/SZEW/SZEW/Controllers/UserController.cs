@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using SZEW.Interfaces;
 using SZEW.Models;
 using SZEW.Repository;
+using SZEW.DTO;
+using AutoMapper;
 
 namespace SZEW.Controllers
 {
@@ -13,18 +15,18 @@ namespace SZEW.Controllers
     public class UserController: Controller
     {
         private readonly IUserRepository _userRepository;
-
-        public UserController(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        public UserController(IUserRepository userRepository, IMapper mapper)
         {
             this._userRepository = userRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<User>))]
         public IActionResult GetUsers()
         {
-            var users = _userRepository.GetUsers();
-
+            var users = _mapper.Map<List<UserDto>>(_userRepository.GetUsers());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -36,7 +38,7 @@ namespace SZEW.Controllers
         [HttpGet("{id}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult ClientExists(int id)
+        public IActionResult UserExists(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -54,7 +56,7 @@ namespace SZEW.Controllers
         [HttpGet("{id}/type")]
         [ProducesResponseType(200, Type = typeof(UserType))]
         [ProducesResponseType(400)]
-        public IActionResult GetClientType(int id)
+        public IActionResult GetUserType(int id)
         {
             if (!ModelState.IsValid || !_userRepository.UserExists(id))
             {

@@ -14,18 +14,19 @@ namespace SZEW.Controllers
     public class WorkshopTaskController : Controller
     {
         private readonly IWorkshopTaskRepository _workshopTaskRepository;
-
-        public WorkshopTaskController(IWorkshopTaskRepository workshopTaskRepository)
+        private readonly IMapper _mapper;
+        public WorkshopTaskController(IWorkshopTaskRepository workshopTaskRepository, IMapper mapper)
         {
             this._workshopTaskRepository = workshopTaskRepository;
+            _mapper = mapper;
+
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<WorkshopTask>))]
         public IActionResult GetAllTasks()
         {
-            var tasks = _workshopTaskRepository.GetAllTasks();
-
+            var tasks = _mapper.Map<List<WorkshopTaskDto>>(_workshopTaskRepository.GetAllTasks());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -44,7 +45,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var task = _workshopTaskRepository.GetTaskById(id);
+            var task = _mapper.Map<WorkshopTaskDto>(_workshopTaskRepository.GetAllTasks());
 
             if (!ModelState.IsValid)
             {

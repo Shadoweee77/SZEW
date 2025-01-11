@@ -14,18 +14,18 @@ namespace SZEW.Controllers
     public class WorkshopJobController : Controller
     {
         private readonly IWorkshopJobRepository _workshopJobRepository;
-
-        public WorkshopJobController(IWorkshopJobRepository workshopJobRepository)
+        private readonly IMapper _mapper;
+        public WorkshopJobController(IWorkshopJobRepository workshopJobRepository, IMapper mapper)
         {
             this._workshopJobRepository = workshopJobRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<WorkshopJob>))]
         public IActionResult GetAllJobs()
         {
-            var jobs = _workshopJobRepository.GetAllJobs();
-
+            var jobs = _mapper.Map<List<WorkshopJobDto>>(_workshopJobRepository.GetAllJobs());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -38,7 +38,7 @@ namespace SZEW.Controllers
         [ProducesResponseType(200, Type = typeof(WorkshopJob))]
         public IActionResult GetJobById(int id)
         {
-            var job = _workshopJobRepository.GetJobById(id);
+            var job = _mapper.Map<WorkshopJobDto>(_workshopJobRepository.GetJobById(id));
 
             if (!ModelState.IsValid)
             {

@@ -13,21 +13,19 @@ namespace SZEW.Controllers
     public class VehicleController : Controller
     {
         private readonly IVehicleRepository _vehicleRepository;
-        //private readonly IMapper _mapper;
+        private readonly IMapper _mapper;
 
-        public VehicleController(IVehicleRepository vehicleRepository)
-        //public VehicleController(IVehicleRepository vehicleRepository, IMapper mapper)
+        public VehicleController(IVehicleRepository vehicleRepository, IMapper mapper)
         {
             this._vehicleRepository = vehicleRepository;
-            //this._mapper = mapper;
+            this._mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<Vehicle>))]
         public IActionResult GetVehicles()
         {
-            var vehicles = _vehicleRepository.GetVehicles();
-            //var vehicles = _mapper.Map<List<VehicleDto>>(_vehicleRepository.GetVehicles());
+            var vehicles = _mapper.Map<List<VehicleDto>>(_vehicleRepository.GetVehicles());
 
             if (!ModelState.IsValid)
             {
@@ -47,8 +45,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var vehicle = _vehicleRepository.GetVehicle(id);
-            //var vehicle = _mapper.Map<List<VehicleDto>>(_vehicleRepository.GetVehicle(id));
+            var vehicle = _mapper.Map<VehicleDto>(_vehicleRepository.GetVehicle(id));
 
             if (!ModelState.IsValid)
             {
@@ -68,8 +65,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var vehicle = _vehicleRepository.GetVehicle(vin);
-            //var vehicle = _mapper.Map<List<VehicleDto>>(_vehicleRepository.GetVehicle(id));
+            var vehicle = _mapper.Map<VehicleDto>(_vehicleRepository.GetVehicle(vin));
 
             if (!ModelState.IsValid)
             {

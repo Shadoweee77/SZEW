@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Repository;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -61,6 +62,9 @@ builder.Services.AddScoped<IWorkshopJobRepository, WorkshopJobRepository>();
 
 // Add controllers to the service collection
 builder.Services.AddControllers();
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Configure OpenAPI
 builder.Services.AddOpenApi();
