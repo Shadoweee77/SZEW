@@ -23,7 +23,7 @@ namespace SZEW.Repository
             return _context.Tasks.OrderBy(p => p.Id).ToList();
         }
 
-        public WorkshopTask GetById(int id)
+        public WorkshopTask GetTaskById(int id)
         {
             return _context.Tasks.Where(p => p.Id == id).FirstOrDefault();
         }

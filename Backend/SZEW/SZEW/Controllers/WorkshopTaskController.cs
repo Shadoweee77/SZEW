@@ -37,14 +37,14 @@ namespace SZEW.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType(200, Type = typeof(Vehicle))]
         [ProducesResponseType(400)]
-        public IActionResult GetById(int id)
+        public IActionResult GetTaskById(int id)
         {
             if (!_workshopTaskRepository.WorkshopTaskExists(id))
             {
                 return NotFound();
             }
 
-            var task = _workshopTaskRepository.GetById(id);
+            var task = _workshopTaskRepository.GetTaskById(id);
 
             if (!ModelState.IsValid)
             {
