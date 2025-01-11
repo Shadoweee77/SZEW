@@ -57,6 +57,7 @@ builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IWorkshopClientRepository, WorkshopClientRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IWorkshopTaskRepository, WorkshopTaskRepository>();
+builder.Services.AddScoped<IWorkshopJobRepository, WorkshopJobRepository>();
 
 // Add controllers to the service collection
 builder.Services.AddControllers();
