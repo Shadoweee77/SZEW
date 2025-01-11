@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SZEW.Interfaces;
 using SZEW.Models;
@@ -61,6 +62,30 @@ namespace SZEW.Controllers
             }
 
             return Ok(_userRepository.GetUserType(id));
+        }
+
+        [HttpGet("profile")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(401)]
+        public IActionResult GetProfile()
+        {
+            // Extract the user ID from the JWT token claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier); // userId should be stored as NameIdentifier
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User not found in the token.");
+            }
+
+            var userId = int.Parse(userIdClaim.Value);
+
+            var user = _userRepository.GetUserById(userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(user);
         }
     }
 }

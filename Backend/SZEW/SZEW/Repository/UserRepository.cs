@@ -31,5 +31,10 @@ namespace SZEW.Repository
         {
             return _context.Users.Any(p => p.Id == id);
         }
+
+        public User GetUserById(int id)
+        {
+            return _context.Users.Where(p => p.Id == id).FirstOrDefault();
+        }
     }
 }
