@@ -6,29 +6,38 @@ services:
       context: .
       dockerfile: SZEW/Dockerfile
     environment:
-        DB_HOST: postgres
-        DB_PORT: 5432
-        DB_NAME: ${DATABASE_NAME:-SZEW_DB}
-        DB_USER: ${PG_USER:-SZEW_DB_USER}
-        DB_PASS: ${PG_PASSWORD:-SZEW_DB_PASS}
+      DOTNET_ENVIRONMENT: Docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DATABASE_NAME:-SZEW_DB}
+      DB_USER: ${PG_USER:-SZEW_DB_USER}
+      DB_PASS: ${PG_PASSWORD:-SZEW_DB_PASS}
+      ASPNETCORE_URLS: "https://+:8080"
     ports:
-      - "80:8080"
-      - "443:8081"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+     - ./SZEW/certs:/app/certs
+    networks:
+      - SZEW_network
 
   postgres:
     container_name: Postgres_SZEW
     image: postgres:17.2
     ports:
-        - 5432:5432
+      - 5432:5432
     environment:
-        POSTGRES_USER: ${PG_USER:-SZEW_DB_USER}
-        POSTGRES_PASSWORD: ${PG_PASSWORD:-SZEW_DB_PASS}
-        POSTGRES_DB: ${DATABASE_NAME:-SZEW_DB}
+      POSTGRES_USER: ${PG_USER:-SZEW_DB_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-SZEW_DB_PASS}
+      POSTGRES_DB: ${DATABASE_NAME:-SZEW_DB}
     volumes:
-        - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - SZEW_network
 
 networks:
-    SZEW_network:
+  SZEW_network:
+    driver: bridge
 
 volumes:
-    db_data:
+  db_data:

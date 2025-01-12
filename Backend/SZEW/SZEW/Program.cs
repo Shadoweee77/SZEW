@@ -9,9 +9,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Collections.Specialized;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var environment = builder.Environment.EnvironmentName;
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddEnvironmentVariables();
 
 // Database connection string
 string dbHost = Dns.GetHostEntry(Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost").AddressList.First().ToString();
@@ -89,7 +94,7 @@ void SeedData(IHost app, bool forced = false)
 }
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || true) //Docker build enviornment is being interpreted as the Prod.
 {
     app.MapOpenApi();
     app.MapScalarApiReference(o => o.WithTheme(ScalarTheme.DeepSpace));
