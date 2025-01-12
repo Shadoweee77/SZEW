@@ -11,6 +11,8 @@ namespace SZEW.Helper
             CreateMap<Vehicle, VehicleDto>();
             CreateMap<WorkshopClient, WorkshopClientDto>();
             CreateMap<User, UserDto>();
+            CreateMap<WorkshopJob, WorkshopJobDto>();
+            CreateMap<WorkshopTask, WorkshopTaskDto>();
         }
     }
 }
