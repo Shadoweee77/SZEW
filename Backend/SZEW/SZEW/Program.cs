@@ -100,7 +100,7 @@ if (app.Environment.IsDevelopment() || true) //Docker build enviornment is being
     app.MapScalarApiReference(o => o.WithTheme(ScalarTheme.DeepSpace));
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

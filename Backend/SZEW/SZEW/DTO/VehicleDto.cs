@@ -11,6 +11,6 @@ namespace SZEW.DTO
         public DateTime? Year { get; set; }
         public string? RegistrationNumber { get; set; }
         public string? Color { get; set; }
-        //public required WorkshopClient Owner { get; set; }
+        public required WorkshopClient Owner { get; set; }
     }
 }

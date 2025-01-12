@@ -13,7 +13,7 @@ namespace SZEW_MAUI {
         private static string? token;
         private static string? login;
         private static string? password;
-        private static string address = "http://localhost:5158/api/";
+        private static string address = "http://localhost:80/api/";
         private class loginResponse {
             public string? token { get; set; }
         }

@@ -14,7 +14,7 @@ services:
       DB_PASS: ${PG_PASSWORD:-SZEW_DB_PASS}
       ASPNETCORE_URLS: "https://+:8080"
     ports:
-      - "8080:8080"
+      - "80:80"
       - "443:443"
     volumes:
      - ./SZEW/certs:/app/certs
