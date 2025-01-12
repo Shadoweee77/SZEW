@@ -7,11 +7,11 @@ public partial class LoadingPage : ContentPage
 		InitializeComponent();
 	}
     protected override async void OnNavigatedTo(NavigatedToEventArgs args) {
-        var usertype = await SecureStorage.GetAsync("usertype");
-        if(usertype == "mechanic") {
+        int usertype = API.loginStatus();
+        if(usertype == 2) {
             await Shell.Current.GoToAsync("/mechanichome");
         }
-        else if(usertype == "admin") {
+        else if(usertype == 1) {
             await Shell.Current.GoToAsync("/adminhome");
         }
         else {
