@@ -10,5 +10,6 @@
         public string? RegistrationNumber { get; set; }
         public string? Color { get; set; }
         public required WorkshopClient Owner { get; set; }
+        public ICollection<WorkshopJob>? Jobs { get; set; }
     }
 }

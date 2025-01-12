@@ -9,6 +9,7 @@
         public required string Description {  get; set; }
         public required DateTime AdmissionDate { get; set; }
         public ICollection<WorkshopTask>? Tasks { get; set; }
-        //Sale document
+        public SaleDocument? RelatedSaleDocument { get; set; }
+
     }
 }

@@ -9,5 +9,6 @@
         public required string Name { get; set; }
         public double Price { get; set; }
         public required User AssignedWorker { get; set; }
+        public required WorkshopJob WorkshopJob { get; set; }
     }
 }
