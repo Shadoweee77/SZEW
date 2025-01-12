@@ -19,7 +19,7 @@ builder.Configuration.AddJsonFile($"appsettings.{environment}.json", optional: t
 builder.Configuration.AddEnvironmentVariables();
 
 // Database connection string
-string dbHost = Dns.GetHostEntry(Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost").AddressList.First().ToString();
+string dbHost = Dns.GetHostEntry(Environment.GetEnvironmentVariable("DB_HOST") ?? "127.0.0.1").AddressList.First().ToString();
 string dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
 string dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "SZEW_DB";
 string dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "SZEW_DB_USER";
