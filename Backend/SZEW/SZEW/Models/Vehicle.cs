@@ -2,7 +2,7 @@
 {
     public class Vehicle
     {
-        public required int Id { get; set; } //Some Vehicles don't have VIN
+        public int Id { get; set; } //Some Vehicles don't have VIN
         public string? VIN { get; set; }
         public required string Make { get; set; } //Use "Custom" for unknown
         public string? Model { get; set; }

@@ -9,5 +9,7 @@ namespace SZEW.Interfaces
         Vehicle GetVehicle(string vin);
         bool VehicleExists(int id);
         bool VehicleExists(string vin);
+        bool CreateVehicle(Vehicle vehicle);
+        bool Save();
     }
 }
