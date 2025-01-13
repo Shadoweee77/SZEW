@@ -13,6 +13,12 @@ namespace SZEW.Repository
             this._context = context;
         }
 
+        public bool CreateVehicle(Vehicle vehicle)
+        {
+            _context.Add(vehicle);
+            return Save();
+        }
+
         public Vehicle GetVehicle(int id)
         {
             return _context.Vehicles.Where(p => p.Id == id).FirstOrDefault();
@@ -26,6 +32,12 @@ namespace SZEW.Repository
         public ICollection<Vehicle> GetVehicles()
         {
             return _context.Vehicles.OrderBy(p => p.Id).ToList();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
         public bool VehicleExists(int id)

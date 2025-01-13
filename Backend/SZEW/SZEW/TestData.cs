@@ -82,7 +82,6 @@ namespace SZEW
                 {
                     new Vehicle()
                     {
-                        Id = 1,
                         Make = "Toyota",
                         Model = "Corolla",
                         Year = new DateTime(2015, 1, 1).ToUniversalTime(),
@@ -93,7 +92,6 @@ namespace SZEW
                     },
                     new Vehicle()
                     {
-                        Id = 2,
                         Make = "Custom",
                         Model = null,
                         Year = null,
@@ -104,7 +102,6 @@ namespace SZEW
                     },
                     new Vehicle()
                     {
-                        Id = 3,
                         Make = "Ford",
                         Model = "F-150",
                         Year = new DateTime(2020, 1, 1).ToUniversalTime(),
@@ -115,7 +112,6 @@ namespace SZEW
                     },
                     new Vehicle()
                     {
-                        Id = 4,
                         Make = "Lamborghini",
                         Model = "Gallardo",
                         Year = new DateTime(2009, 12, 10).ToUniversalTime(),
@@ -126,7 +122,6 @@ namespace SZEW
                     },
                     new Vehicle()
                     {
-                        Id = 5,
                         Make = "Chevrolet",
                         Model = "Camaro",
                         Year = new DateTime(2018, 6, 15).ToUniversalTime(),
@@ -137,7 +132,6 @@ namespace SZEW
                     },
                     new Vehicle()
                     {
-                        Id = 6,
                         Make = "Tesla",
                         Model = "Model S",
                         Year = new DateTime(2021, 3, 30).ToUniversalTime(),
@@ -148,7 +142,6 @@ namespace SZEW
                     },
                     new Vehicle()
                     {
-                        Id = 7,
                         Make = "BMW",
                         Model = "X5",
                         Year = new DateTime(2022, 8, 12).ToUniversalTime(),

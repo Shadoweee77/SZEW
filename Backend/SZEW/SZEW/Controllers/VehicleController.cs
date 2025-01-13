@@ -13,11 +13,13 @@ namespace SZEW.Controllers
     public class VehicleController : Controller
     {
         private readonly IVehicleRepository _vehicleRepository;
+        private readonly IWorkshopClientRepository _ownerRepository;
         private readonly IMapper _mapper;
 
-        public VehicleController(IVehicleRepository vehicleRepository, IMapper mapper)
+        public VehicleController(IVehicleRepository vehicleRepository, IWorkshopClientRepository _ownerRepository, IMapper mapper)
         {
             this._vehicleRepository = vehicleRepository;
+            this._ownerRepository = _ownerRepository;
             this._mapper = mapper;
         }
 
@@ -90,6 +92,64 @@ namespace SZEW.Controllers
                 return Ok(true);
             }
             else return Ok(false);
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        
+        public IActionResult CreateVehicle([FromQuery] int OwnerId,[FromBody] VehicleDto vehicleCreate)
+        {
+            if (vehicleCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!string.IsNullOrWhiteSpace(vehicleCreate.VIN))
+            {
+                var existingVehicleByVIN = _vehicleRepository.GetVehicles()
+                    .FirstOrDefault(v =>
+                    !string.IsNullOrWhiteSpace(vehicleCreate.VIN) &&
+                    v.VIN != null &&
+                    v.VIN.Trim().ToUpper() == vehicleCreate.VIN.Trim().ToUpper());
+
+
+                if (existingVehicleByVIN != null)
+                {
+                    ModelState.AddModelError("", "Vehicle with this VIN already exists");
+                    return StatusCode(422, ModelState);
+                }
+            }
+
+            // Check for duplicate vehicle based on Registration Number (if provided)
+            if (!string.IsNullOrWhiteSpace(vehicleCreate.RegistrationNumber))
+            {
+                var existingVehicleByReg = _vehicleRepository.GetVehicles()
+                    .FirstOrDefault(v =>
+                    !string.IsNullOrWhiteSpace(vehicleCreate.RegistrationNumber) &&
+                    v.RegistrationNumber != null &&
+                    v.RegistrationNumber.Trim().ToUpper() == vehicleCreate.RegistrationNumber.Trim().ToUpper());
+
+                if (existingVehicleByReg != null)
+                {
+                    ModelState.AddModelError("", "Vehicle with this Registration Number already exists");
+                    return StatusCode(422, ModelState);
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var vehicleMap = _mapper.Map<Vehicle>(vehicleCreate);
+            vehicleMap.Owner = _ownerRepository.GetClient(OwnerId);
+
+            if (!_vehicleRepository.CreateVehicle(vehicleMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully created");
         }
     }
 }

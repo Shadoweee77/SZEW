@@ -91,7 +91,7 @@ namespace SZEW.Migrations
                     b.Property<int>("OrdererId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("RegistrationDate")
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -140,7 +140,7 @@ namespace SZEW.Migrations
                     b.Property<int>("OrdererId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("RegistrationDate")
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
