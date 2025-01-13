@@ -166,7 +166,7 @@ namespace SZEW
                         Id = 1,
                         Login = "admin1",
                         Name = "Admin",
-                        Surname = "One",
+                        Surname = "Oneeeeeeeee",
                         Email = "admin1@workshop.com",
                         PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
                         UserType = UserType.Admin
@@ -213,8 +213,86 @@ namespace SZEW
                     }
                 };
 
+                var workshopJobs = new List<WorkshopJob>()
+                {
+                    new WorkshopJob()
+                    {
+                        Id = 1,
+                        Vehicle = vehicles.First(v => v.Id == 1), // Toyota Corolla
+                        Complete = false,
+                        Description = "Oil change and tire rotation.",
+                        AdmissionDate = DateTime.UtcNow.AddDays(-7),
+                        RelatedSaleDocument = null
+                    },
+                    new WorkshopJob()
+                    {
+                        Id = 2,
+                        Vehicle = vehicles.First(v => v.Id == 3), // Ford F-150
+                        Complete = true,
+                        Description = "Brake pad replacement and battery check.",
+                        AdmissionDate = DateTime.UtcNow.AddDays(-30),
+                        RelatedSaleDocument = null
+                    }
+                };
+
+
+                var workshopTasks = new List<WorkshopTask>()
+                {
+                    new WorkshopTask()
+                    {
+                        Id = 1,
+                        Complete = false,
+                        Name = "Oil Change",
+                        Description = "Replace engine oil with synthetic oil.",
+                        Price = 200,
+                        AssignedWorker = users.First(u => u.Login == "mechanic1"),
+                        WorkshopJob = workshopJobs.First(w => w.Id == 1)
+
+                    },
+                    new WorkshopTask()
+                    {
+                        Id = 2,
+                        Name = "Tire Rotation",
+                        Description = "Rotate all four tires to ensure even wear.",
+                        Price = 20.00,
+                        Complete = false,
+                        AssignedWorker = users.First(u => u.Login == "mechanic1"),
+                        WorkshopJob = workshopJobs.First(w => w.Id == 1)
+                    },
+                    new WorkshopTask()
+                    {
+                        Id = 3,
+                        Name = "Brake Pad Replacement",
+                        Description = "Replace front and rear brake pads.",
+                        Price = 150.00,
+                        Complete = true,
+                        AssignedWorker = users.First(u => u.Login == "mechanic1"),
+                        WorkshopJob = workshopJobs.First(w => w.Id == 2)
+                    },
+                    new WorkshopTask()
+                    {
+                        Id = 4,
+                        Name = "Battery Check",
+                        Description = "Inspect and test battery health.",
+                        Price = 30.00,
+                        Complete = true,
+                        AssignedWorker = users.First(u => u.Login == "mechanic1"),
+                        WorkshopJob = workshopJobs.First(w => w.Id == 2)
+                    }
+                };
+
+
+
+
+                dataContext.Jobs.AddRange(workshopJobs);
+                dataContext.Tasks.AddRange(workshopTasks);
                 dataContext.Vehicles.AddRange(vehicles);
                 dataContext.Users.AddRange(users);
+
+
+
+
+
 
                 dataContext.SaveChanges();
             }
