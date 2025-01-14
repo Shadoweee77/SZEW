@@ -97,7 +97,7 @@ namespace SZEW.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         
-        public IActionResult CreateVehicle([FromQuery] int OwnerId,[FromBody] VehicleDto vehicleCreate)
+        public IActionResult CreateVehicle([FromQuery] int OwnerId,[FromBody] AddVehicleDto vehicleCreate)
         {
             if (vehicleCreate == null)
             {
