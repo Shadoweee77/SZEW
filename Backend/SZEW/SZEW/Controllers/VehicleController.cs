@@ -151,5 +151,56 @@ namespace SZEW.Controllers
             }
             return Ok("Successfully created");
         }
+        [HttpPut("{vehicleId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateVehicle(int vehicleId, [FromBody] VehicleDto updatedVehicle)
+        {
+            if (updatedVehicle == null)
+                return BadRequest(ModelState);
+
+            if (vehicleId != updatedVehicle.Id)
+                return BadRequest(ModelState);
+
+            if (!_vehicleRepository.VehicleExists(vehicleId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var vehicleMap = _mapper.Map<Vehicle>(updatedVehicle);
+
+            if (!_vehicleRepository.UpdateVehicle(vehicleMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating vehicle");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+        [HttpDelete("{vehicleId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteVehicle(int vehicleId)
+        {
+            if (!_vehicleRepository.VehicleExists(vehicleId))
+            {
+                return NotFound();
+            }
+
+            var vehicleToDelete = _vehicleRepository.GetVehicle(vehicleId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_vehicleRepository.DeleteVehicle(vehicleToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting owner");
+            }
+
+            return NoContent();
+        }
     }
 }

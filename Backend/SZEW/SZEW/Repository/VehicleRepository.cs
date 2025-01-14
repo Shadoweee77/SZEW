@@ -19,6 +19,12 @@ namespace SZEW.Repository
             return Save();
         }
 
+        public bool DeleteVehicle(Vehicle vehicle)
+        {
+            _context.Remove(vehicle);
+            return Save();
+        }
+
         public Vehicle GetVehicle(int id)
         {
             return _context.Vehicles.Where(p => p.Id == id).FirstOrDefault();
@@ -38,6 +44,12 @@ namespace SZEW.Repository
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+
+        public bool UpdateVehicle(Vehicle vehicle)
+        {
+            _context.Update(vehicle);
+            return Save();
         }
 
         public bool VehicleExists(int id)

@@ -10,6 +10,8 @@ namespace SZEW.Interfaces
         bool VehicleExists(int id);
         bool VehicleExists(string vin);
         bool CreateVehicle(Vehicle vehicle);
+        bool UpdateVehicle(Vehicle vehicle);
+        bool DeleteVehicle(Vehicle vehicle);
         bool Save();
     }
 }
