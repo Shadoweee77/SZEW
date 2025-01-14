@@ -14,10 +14,12 @@ namespace SZEW.Controllers
     public class WorkshopJobController : Controller
     {
         private readonly IWorkshopJobRepository _workshopJobRepository;
+        private readonly IVehicleRepository _vehicleRepository;
         private readonly IMapper _mapper;
-        public WorkshopJobController(IWorkshopJobRepository workshopJobRepository, IMapper mapper)
+        public WorkshopJobController(IWorkshopJobRepository workshopJobRepository, IVehicleRepository vehicleRepository, IMapper mapper)
         {
             this._workshopJobRepository = workshopJobRepository;
+            this._vehicleRepository = vehicleRepository;
             _mapper = mapper;
         }
 
@@ -64,5 +66,86 @@ namespace SZEW.Controllers
             }
             else return Ok(false);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+
+        public IActionResult CreateVehicle([FromQuery] int VehicleId, [FromBody] CreateWorkshopJobDto workshopJobCreate)
+        {
+            if (workshopJobCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            // duplicate check could be added here maybe by VehicleId + description, idk if needed
+            var workshopJobMap = _mapper.Map<WorkshopJob>(workshopJobCreate);
+            workshopJobMap.Vehicle = _vehicleRepository.GetVehicle(VehicleId);
+
+            if (!_workshopJobRepository.CreateWorkshopJob(workshopJobMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully created");
+        }
+        [HttpPut("{workshopJobId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateWorkshopJob(int workshopJobId, [FromBody] WorkshopJobDto updatedWorkshopJob)
+        {
+            if (updatedWorkshopJob == null)
+                return BadRequest(ModelState);
+
+            if (workshopJobId != updatedWorkshopJob.Id)
+                return BadRequest(ModelState);
+
+            if (!_workshopJobRepository.WorkshopJobExists(workshopJobId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var workshopJobMap = _mapper.Map<WorkshopJob>(updatedWorkshopJob);
+
+            if (!_workshopJobRepository.UpdateWorkshopJob(workshopJobMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating workshop job");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+        [HttpDelete("{workshopJobId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteWorkshopJob(int workshopJobId)
+        {
+            if (!_workshopJobRepository.WorkshopJobExists(workshopJobId))
+            {
+                return NotFound();
+            }
+
+            var workshopJobToDelete = _workshopJobRepository.GetJobById(workshopJobId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_workshopJobRepository.DeleteWorkshopJob(workshopJobToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting workshop job");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+
     }
 }

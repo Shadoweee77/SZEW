@@ -7,7 +7,7 @@ namespace SZEW.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<Vehicle> Vehicles { get; set; }

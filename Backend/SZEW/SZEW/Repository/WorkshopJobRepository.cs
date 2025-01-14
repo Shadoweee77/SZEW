@@ -13,6 +13,18 @@ namespace SZEW.Repository
             this._context = context;
         }
 
+        public bool CreateWorkshopJob(WorkshopJob workshopJob)
+        {
+            _context.Add(workshopJob);
+            return Save();
+        }
+
+        public bool DeleteWorkshopJob(WorkshopJob workshopJob)
+        {
+            _context.Remove(workshopJob);
+            return Save();
+        }
+
         public ICollection<WorkshopJob> GetAllJobs()
         {
             return _context.Jobs.OrderBy(p => p.Id).ToList();
@@ -28,9 +40,21 @@ namespace SZEW.Repository
             return _context.Jobs.Where(p => p.Id == id).FirstOrDefault().Complete = isComplete;
         }
 
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        public bool UpdateWorkshopJob(WorkshopJob workshopJob)
+        {
+            _context.Update(workshopJob);
+            return Save();
+        }
+
         public bool WorkshopJobExists(int id)
         {
-            throw new NotImplementedException();
+            return _context.Jobs.Any(p => p.Id == id);
         }
     }
 }

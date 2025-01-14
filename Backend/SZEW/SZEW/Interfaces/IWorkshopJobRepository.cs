@@ -8,8 +8,9 @@ namespace SZEW.Interfaces
         WorkshopJob GetJobById(int id);
         bool WorkshopJobExists(int id);
         bool MarkComplete(int id, bool isComplete);
-        //bool CreateJob();
-        //bool UpdateJob(int id);
-        //bool DeleteJobById(int id);
+        bool CreateWorkshopJob(WorkshopJob workshopJob);
+        bool UpdateWorkshopJob(WorkshopJob workshopJob);
+        bool DeleteWorkshopJob(WorkshopJob workshopJob);
+        bool Save();
     }
 }

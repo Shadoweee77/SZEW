@@ -74,6 +74,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Configure OpenAPI
 builder.Services.AddOpenApi();
 
+
 var app = builder.Build();
 
 // Seed data if specified in the arguments
