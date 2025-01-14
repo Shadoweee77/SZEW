@@ -27,8 +27,8 @@ namespace SZEW.Controllers
         public IActionResult GetAllDocuments()
         {
             var documents = _saleDocumentRepository.GetAllDocuments();
-            var documentsDto = _mapper.Map<List<SaleDocumentDto>>(documents);
-            return Ok(documentsDto);
+            var documentDtos = _mapper.Map<List<SaleDocumentDto>>(documents);
+            return Ok(documentDtos);
         }
 
         [HttpGet("{id}")]
