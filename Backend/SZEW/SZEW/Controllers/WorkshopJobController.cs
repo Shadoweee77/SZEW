@@ -71,7 +71,7 @@ namespace SZEW.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
 
-        public IActionResult CreateVehicle([FromQuery] int VehicleId, [FromBody] CreateWorkshopJobDto workshopJobCreate)
+        public IActionResult CreateWorkshopJob([FromQuery] int VehicleId, [FromBody] CreateWorkshopJobDto workshopJobCreate)
         {
             if (workshopJobCreate == null)
             {
