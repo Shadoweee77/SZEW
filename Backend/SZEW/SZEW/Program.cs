@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Collections.Specialized;
+using SZEW.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,6 +65,13 @@ builder.Services.AddScoped<IWorkshopClientRepository, WorkshopClientRepository>(
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IWorkshopTaskRepository, WorkshopTaskRepository>();
 builder.Services.AddScoped<IWorkshopJobRepository, WorkshopJobRepository>();
+builder.Services.AddScoped<IToolRepository, ToolRepository>();
+builder.Services.AddScoped<ISparePartRepository, SparePartRepository>();
+builder.Services.AddScoped<ISparePartsOrderRepository, SparePartsOrderRepository>();
+builder.Services.AddScoped<IToolsOrderRepository, ToolsOrderRepository>();
+builder.Services.AddScoped<IToolsRequestRepository, ToolsRequestRepository>();
+builder.Services.AddScoped<ISaleDocumentRepository, SaleDocumentRepository>();
+
 
 // Add controllers to the service collection
 builder.Services.AddControllers();

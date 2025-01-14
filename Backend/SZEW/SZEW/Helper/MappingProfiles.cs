@@ -18,6 +18,12 @@ namespace SZEW.Helper
             CreateMap<User, UserDto>();
             
             CreateMap<WorkshopTask, WorkshopTaskDto>();
+            CreateMap<Tool, ToolDto>().ReverseMap();
+            CreateMap<SparePart, SparePartDto>();
+            CreateMap<SparePartsOrder, SparePartsOrderDto>();
+            CreateMap<ToolsOrder, ToolsOrderDto>();
+            CreateMap<ToolsRequest, ToolsRequestDto>();
+            CreateMap<SaleDocument, SaleDocumentDto>();
         }
     }
 }
