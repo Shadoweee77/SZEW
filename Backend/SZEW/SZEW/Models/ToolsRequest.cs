@@ -16,6 +16,6 @@ namespace SZEW.Models
         public required string Description { get; set; }
         public double Price { get; set; }
         public int Amount { get; set; }
-        public required DateTime RequestDate { get; set; }
+        public required DateTime RequestDate { get; set; } = DateTime.Now;
     }
 }

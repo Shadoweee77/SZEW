@@ -4,7 +4,7 @@ namespace SZEW.DTO
 {
     public class VehicleDto
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
         public string? VIN { get; set; }
         public required string Make { get; set; } //Use "Custom" for unknown
         public string? Model { get; set; }

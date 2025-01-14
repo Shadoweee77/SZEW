@@ -290,7 +290,8 @@ namespace SZEW
                         IssueDate = DateTime.UtcNow.AddDays(-5),
                         DocumentIssuer = users.First(u => u.Login == "admin1"),
                         RelatedJobId = workshopJobs.First(w => w.Id == 1).Id,
-                        RelatedJob = workshopJobs.First(w => w.Id == 1)
+                        RelatedJob = workshopJobs.First(w => w.Id == 1),
+                        IsPaid = false
                     },
                     new SaleDocument()
                     {
@@ -299,7 +300,8 @@ namespace SZEW
                         IssueDate = DateTime.UtcNow.AddDays(-20),
                         DocumentIssuer = users.First(u => u.Login == "admin2"),
                         RelatedJobId = workshopJobs.First(w => w.Id == 2).Id,
-                        RelatedJob = workshopJobs.First(w => w.Id == 2)
+                        RelatedJob = workshopJobs.First(w => w.Id == 2),
+                        IsPaid = true
                     }
                 };
 
