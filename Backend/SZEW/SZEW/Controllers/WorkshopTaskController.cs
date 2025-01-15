@@ -45,7 +45,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var task = _mapper.Map<WorkshopTaskDto>(_workshopTaskRepository.GetAllTasks());
+            var task = _mapper.Map<WorkshopTaskDto>(_workshopTaskRepository.GetTaskById(id));
 
             if (!ModelState.IsValid)
             {
