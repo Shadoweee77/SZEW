@@ -1,4 +1,5 @@
-﻿using SZEW.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Models;
 
@@ -27,17 +28,18 @@ namespace SZEW.Repository
 
         public Vehicle GetVehicle(int id)
         {
-            return _context.Vehicles.Where(p => p.Id == id).FirstOrDefault();
+            return _context.Vehicles.Where(p => p.Id == id).Include(vehicle => vehicle.Owner).FirstOrDefault();
         }
 
         public Vehicle GetVehicle(string vin)
         {
-            return _context.Vehicles.Where(p => p.VIN == vin).FirstOrDefault();
+            return _context.Vehicles.Where(p => p.VIN == vin).Include(vehicle => vehicle.Owner).FirstOrDefault();
         }
 
         public ICollection<Vehicle> GetVehicles()
         {
-            return _context.Vehicles.OrderBy(p => p.Id).ToList();
+            return _context.Vehicles.Include(v => v.Owner).OrderBy(p => p.Id).ToList();
+
         }
 
         public bool Save()

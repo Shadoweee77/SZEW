@@ -8,13 +8,19 @@ namespace SZEW.Helper
     {
         public MappingProfiles()
         {
-            CreateMap<Vehicle, VehicleDto>();
+
+            CreateMap<Vehicle, VehicleDto>()
+            .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Owner.Id));
+
+            CreateMap<WorkshopClient, WorkshopClientDto>()
+                .ForMember(dest => dest.VehicleIds, opt => opt.MapFrom(src => src.Vehicles.Select(v => v.Id).ToList()));
+            //CreateMap<Vehicle, VehicleDto>();
             CreateMap<VehicleDto, Vehicle>();
             CreateMap<CreateVehicleDto, Vehicle>();
             CreateMap<WorkshopJob, WorkshopJobDto>();
             CreateMap<WorkshopJobDto, WorkshopJob>();
             CreateMap<CreateWorkshopJobDto, WorkshopJob>();
-            CreateMap<WorkshopClient, WorkshopClientDto>();
+            //CreateMap<WorkshopClient, WorkshopClientDto>();
             CreateMap<User, UserDto>();
             
             CreateMap<WorkshopTask, WorkshopTaskDto>();

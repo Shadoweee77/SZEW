@@ -1,4 +1,5 @@
-﻿using SZEW.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Models;
 
@@ -19,12 +20,12 @@ namespace SZEW.Repository
 
         public WorkshopClient GetClient(int id)
         {
-            return _context.Clients.Where(p => p.Id == id).FirstOrDefault();
+            return _context.Clients.Where(p => p.Id == id).Include(client => client.Vehicles).FirstOrDefault();
         }
 
         public ICollection<WorkshopClient> GetClients()
         {
-            return _context.Clients.OrderBy(p => p.Id).ToList();
+            return _context.Clients.Include(c => c.Vehicles).ToList().OrderBy(p => p.Id).ToList();
         }
 
         public ClientType GetClientType(int id)
