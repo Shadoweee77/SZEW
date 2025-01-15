@@ -181,18 +181,18 @@ namespace SZEW.Controllers
             if (updatedVehicle == null)
                 return BadRequest(ModelState);
 
-            if (vehicleId != updatedVehicle.Id)
-                return BadRequest(ModelState);
-
             if (!_vehicleRepository.VehicleExists(vehicleId))
                 return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var existingVehicle = _vehicleRepository.GetVehicle(vehicleId);
+            if (existingVehicle == null)
+                return NotFound();
 
-            var vehicleMap = _mapper.Map<Vehicle>(updatedVehicle);
+            _mapper.Map(updatedVehicle, existingVehicle);
+            if (vehicleId != existingVehicle.Id)
+                return BadRequest(ModelState);
 
-            if (!_vehicleRepository.UpdateVehicle(vehicleMap))
+            if (!_vehicleRepository.UpdateVehicle(existingVehicle))
             {
                 ModelState.AddModelError("", "Something went wrong updating vehicle");
                 return StatusCode(500, ModelState);
