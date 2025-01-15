@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
@@ -93,25 +95,25 @@ namespace SZEW.Controllers
             }
             else return Ok(false);
         }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        
-        public IActionResult CreateVehicle([FromQuery] int OwnerId,[FromBody] CreateVehicleDto vehicleCreate)
+        public IActionResult CreateVehicle([FromQuery] int OwnerId, [FromBody] CreateVehicleDto vehicleCreate)
         {
             if (vehicleCreate == null)
             {
                 return BadRequest(ModelState);
             }
 
+            // Check for duplicate VIN
             if (!string.IsNullOrWhiteSpace(vehicleCreate.VIN))
             {
                 var existingVehicleByVIN = _vehicleRepository.GetVehicles()
                     .FirstOrDefault(v =>
-                    !string.IsNullOrWhiteSpace(vehicleCreate.VIN) &&
-                    v.VIN != null &&
-                    v.VIN.Trim().ToUpper() == vehicleCreate.VIN.Trim().ToUpper());
-
+                        !string.IsNullOrWhiteSpace(vehicleCreate.VIN) &&
+                        v.VIN != null &&
+                        v.VIN.Trim().ToUpper() == vehicleCreate.VIN.Trim().ToUpper());
 
                 if (existingVehicleByVIN != null)
                 {
@@ -120,14 +122,14 @@ namespace SZEW.Controllers
                 }
             }
 
-            // Check for duplicate vehicle based on Registration Number (if provided)
+            // Check for duplicate Registration Number
             if (!string.IsNullOrWhiteSpace(vehicleCreate.RegistrationNumber))
             {
                 var existingVehicleByReg = _vehicleRepository.GetVehicles()
                     .FirstOrDefault(v =>
-                    !string.IsNullOrWhiteSpace(vehicleCreate.RegistrationNumber) &&
-                    v.RegistrationNumber != null &&
-                    v.RegistrationNumber.Trim().ToUpper() == vehicleCreate.RegistrationNumber.Trim().ToUpper());
+                        !string.IsNullOrWhiteSpace(vehicleCreate.RegistrationNumber) &&
+                        v.RegistrationNumber != null &&
+                        v.RegistrationNumber.Trim().ToUpper() == vehicleCreate.RegistrationNumber.Trim().ToUpper());
 
                 if (existingVehicleByReg != null)
                 {
@@ -141,16 +143,35 @@ namespace SZEW.Controllers
                 return BadRequest(ModelState);
             }
 
+            // Map vehicleCreate DTO to the Vehicle model
             var vehicleMap = _mapper.Map<Vehicle>(vehicleCreate);
             vehicleMap.Owner = _ownerRepository.GetClient(OwnerId);
 
-            if (!_vehicleRepository.CreateVehicle(vehicleMap))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
+                // Manually set the ID based on the current max ID from the database
+                var maxId = _vehicleRepository.GetVehicles().Max(v => v.Id);
+                vehicleMap.Id = maxId + 1;  // Set the new ID to max(id) + 1
+
+                // Create the vehicle with the manually set ID
+                if (!_vehicleRepository.CreateVehicle(vehicleMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
             }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
+            {
+                ModelState.AddModelError("", "A vehicle with the same ID already exists");
+                return StatusCode(409, ModelState); // HTTP 409 Conflict
+            }
+
             return Ok("Successfully created");
         }
+
+
+
+
         [HttpPut("{vehicleId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
