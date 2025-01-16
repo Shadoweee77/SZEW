@@ -9,6 +9,5 @@ namespace SZEW.DTO
         public required string Description { get; set; }
         public required string Name { get; set; }
         public double Price { get; set; }
-        public required User AssignedWorker { get; set; }
     }
 }

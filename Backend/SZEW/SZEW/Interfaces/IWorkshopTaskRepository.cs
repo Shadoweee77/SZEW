@@ -8,8 +8,9 @@ namespace SZEW.Interfaces
         WorkshopTask GetTaskById(int id);
         bool WorkshopTaskExists(int id);
         //bool MarkComplete(int id, bool isComplete);
-        //bool CreateTask();
-        //bool DeleteTask();
-        //bool UpdateTask();
+        bool CreateWorkshopTask(WorkshopTask workshopTask);
+        bool UpdateWorkshopTask(WorkshopTask workshopTask);
+        bool DeleteWorkshopTask(WorkshopTask workshopTask);
+        bool Save();
     }
 }

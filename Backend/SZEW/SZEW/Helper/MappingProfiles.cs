@@ -19,13 +19,17 @@ namespace SZEW.Helper
             //CreateMap<Vehicle, VehicleDto>();
             CreateMap<VehicleDto, Vehicle>();
             CreateMap<CreateVehicleDto, Vehicle>();
+
             CreateMap<WorkshopJob, WorkshopJobDto>();
             CreateMap<WorkshopJobDto, WorkshopJob>();
             CreateMap<CreateWorkshopJobDto, WorkshopJob>();
             //CreateMap<WorkshopClient, WorkshopClientDto>();
+            
             CreateMap<User, UserDto>();
             
             CreateMap<WorkshopTask, WorkshopTaskDto>();
+            CreateMap<CreateWorkshopTaskDto, WorkshopTask>();
+
             CreateMap<Tool, ToolDto>().ReverseMap();
             CreateMap<SparePart, SparePartDto>();
             CreateMap<SparePartsOrder, SparePartsOrderDto>();

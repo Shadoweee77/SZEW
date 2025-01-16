@@ -27,5 +27,29 @@ namespace SZEW.Repository
         {
             return _context.Tasks.Where(p => p.Id == id).FirstOrDefault();
         }
+
+        public bool CreateWorkshopTask(WorkshopTask workshopTask)
+        {
+            _context.Add(workshopTask);
+            return Save();
+        }
+
+        public bool UpdateWorkshopTask(WorkshopTask workshopTask)
+        {
+            _context.Update(workshopTask);
+            return Save();
+        }
+
+        public bool DeleteWorkshopTask(WorkshopTask workshopTask)
+        {
+            _context.Remove(workshopTask);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }
