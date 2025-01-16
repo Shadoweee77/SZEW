@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
@@ -86,10 +88,23 @@ namespace SZEW.Controllers
             var workshopJobMap = _mapper.Map<WorkshopJob>(workshopJobCreate);
             workshopJobMap.Vehicle = _vehicleRepository.GetVehicle(VehicleId);
 
-            if (!_workshopJobRepository.CreateWorkshopJob(workshopJobMap))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
+                // Manually set the ID based on the current max ID from the database
+                var maxId = _workshopJobRepository.GetAllJobs().Max(v => v.Id);
+                workshopJobMap.Id = maxId + 1;  // Set the new ID to max(id) + 1
+
+                // Create the vehicle with the manually set ID
+                if (!_workshopJobRepository.CreateWorkshopJob(workshopJobMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
+            {
+                ModelState.AddModelError("", "A vehicle with the same ID already exists");
+                return StatusCode(409, ModelState); // HTTP 409 Conflict
             }
             return Ok("Successfully created");
         }
@@ -97,23 +112,21 @@ namespace SZEW.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateWorkshopJob(int workshopJobId, [FromBody] WorkshopJobDto updatedWorkshopJob)
+        public IActionResult UpdateWorkshopJob(int workshopJobId, [FromBody] CreateWorkshopJobDto updatedWorkshopJob)
         {
             if (updatedWorkshopJob == null)
                 return BadRequest(ModelState);
 
-            if (workshopJobId != updatedWorkshopJob.Id)
-                return BadRequest(ModelState);
 
             if (!_workshopJobRepository.WorkshopJobExists(workshopJobId))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
-
-            var workshopJobMap = _mapper.Map<WorkshopJob>(updatedWorkshopJob);
-
-            if (!_workshopJobRepository.UpdateWorkshopJob(workshopJobMap))
+            var existingWorkshopJob = _workshopJobRepository.GetJobById(workshopJobId);
+            _mapper.Map(updatedWorkshopJob, existingWorkshopJob);
+            if(workshopJobId!= existingWorkshopJob.Id)
+            if (!_workshopJobRepository.UpdateWorkshopJob(existingWorkshopJob))
             {
                 ModelState.AddModelError("", "Something went wrong updating workshop job");
                 return StatusCode(500, ModelState);
