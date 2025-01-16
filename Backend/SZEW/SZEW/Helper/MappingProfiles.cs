@@ -35,6 +35,7 @@ namespace SZEW.Helper
 
             CreateMap<Tool, ToolDto>().ReverseMap();
             CreateMap<SparePart, SparePartDto>();
+            CreateMap<CreateSparePartDto, SparePart>();
             CreateMap<SparePartsOrder, SparePartsOrderDto>();
             CreateMap<ToolsOrder, ToolsOrderDto>();
 

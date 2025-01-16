@@ -1,6 +1,6 @@
 ﻿namespace SZEW.DTO
 {
-    public class SparePartDto
+    public class CreateSparePartDto
     {
         public required string Name { get; set; }
         public double Price { get; set; }
