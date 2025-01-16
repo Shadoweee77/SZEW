@@ -34,7 +34,11 @@ namespace SZEW.Helper
             CreateMap<SparePart, SparePartDto>();
             CreateMap<SparePartsOrder, SparePartsOrderDto>();
             CreateMap<ToolsOrder, ToolsOrderDto>();
+
             CreateMap<ToolsRequest, ToolsRequestDto>();
+            CreateMap<ToolsRequestDto, ToolsRequest>();
+            CreateMap<CreateToolsRequestDto, ToolsRequest>();
+
             CreateMap<SaleDocument, SaleDocumentDto>();
         }
     }
