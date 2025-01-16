@@ -366,14 +366,12 @@ namespace SZEW
                         Id = 1,
                         Orderer = users.First(u => u.Login == "admin1"), // Example user as orderer
                         RegistrationDate = DateTime.UtcNow.AddDays(-20), // Order placed 20 days ago
-                        Tools = new List<Tool>() // Empty initially
                     },
                     new ToolsOrder()
                     {
                         Id = 2,
                         Orderer = users.First(u => u.Login == "mechanic1"), // Example user as orderer
                         RegistrationDate = DateTime.UtcNow.AddDays(-10), // Order placed 10 days ago
-                        Tools = new List<Tool>() // Empty initially
                     }
                 };
 
@@ -382,7 +380,7 @@ namespace SZEW
                     new Tool()
                     {
                         Id = 1,
-                        Order = toolsOrders.First(o => o.Id == 1),
+                        Order = toolsOrders[0],
                         Name = "Hammer",
                         Price = 15.00,
                         Amount = 3
@@ -390,7 +388,7 @@ namespace SZEW
                     new Tool()
                     {
                         Id = 2,
-                        Order = toolsOrders.First(o => o.Id == 1),
+                        Order = toolsOrders[0],
                         Name = "Screwdriver Set",
                         Price = 25.00,
                         Amount = 2
@@ -398,7 +396,7 @@ namespace SZEW
                     new Tool()
                     {
                         Id = 3,
-                        Order = toolsOrders.First(o => o.Id == 2),
+                        Order = toolsOrders[1],
                         Name = "Wrench",
                         Price = 10.00,
                         Amount = 5
@@ -406,12 +404,17 @@ namespace SZEW
                     new Tool()
                     {
                         Id = 4,
-                        Order = toolsOrders.First(o => o.Id == 2),
+                        Order = toolsOrders[1],
                         Name = "Power Drill",
                         Price = 75.00,
                         Amount = 1
                     }
                 };
+
+                //toolsOrders[0].Tools.Add(tools.First(t => t.Id == 1));
+                //toolsOrders[0].Tools.Add(tools.First(t => t.Id == 2));
+                //toolsOrders[1].Tools.Add(tools.First(t => t.Id == 3));
+                //toolsOrders[1].Tools.Add(tools.First(t => t.Id == 4));
 
                 var toolsRequests = new List<ToolsRequest>()
                 {

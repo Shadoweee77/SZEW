@@ -7,7 +7,8 @@ namespace SZEW.DTO
     {
         public int Id { get; set; }
         public int OrdererId { get; set; }
+        public string OrdererName { get; set; } = string.Empty;
         public DateTime RegistrationDate { get; set; }
-        public List<int> ToolIds { get; set; }
+        public ICollection<int> Tools { get; set; } = new List<int>();
     }
 }

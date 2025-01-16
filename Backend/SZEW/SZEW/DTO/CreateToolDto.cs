@@ -1,6 +1,6 @@
 ﻿namespace SZEW.DTO
 {
-    public class ToolDto
+    public class CreateToolDto
     {
         public required string Name { get; set; }
         public double Price { get; set; }

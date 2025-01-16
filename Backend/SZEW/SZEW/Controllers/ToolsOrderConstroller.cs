@@ -1,86 +1,153 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
-using System.Collections.Generic;
+using SZEW.Repository;
 
 namespace SZEW.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]
     [ApiController]
-    public class ToolsOrderController : ControllerBase
+    public class ToolsOrderController : Controller
     {
         private readonly IToolsOrderRepository _toolsOrderRepository;
+        private readonly IToolRepository _toolRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public ToolsOrderController(IToolsOrderRepository toolsOrderRepository, IMapper mapper)
+        public ToolsOrderController(IToolsOrderRepository toolsOrderRepository, IUserRepository userRepository, IMapper mapper, IToolRepository toolRepository)
         {
+            _toolRepository = toolRepository;
             _toolsOrderRepository = toolsOrderRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        // GET: api/toolsorder
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<ToolsOrderDto>))]
-        public IActionResult GetAllOrders()
+        public IActionResult GetToolsOrders()
         {
-            var orders = _toolsOrderRepository.GetAllOrders();
-            var ordersDto = _mapper.Map<List<ToolsOrderDto>>(orders);
+            var orders = _mapper.Map<List<ToolsOrderDto>>(_toolsOrderRepository.GetAllOrders());
 
-            return Ok(ordersDto);
-        }
-
-        // GET: api/toolsorder/5
-        [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(ToolsOrderDto))]
-        [ProducesResponseType(404)]
-        public IActionResult GetOrderById(int id)
-        {
-            var order = _toolsOrderRepository.GetOrderById(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            var orderDto = _mapper.Map<ToolsOrderDto>(order);
-            return Ok(orderDto);
-        }
-
-        // POST: api/toolsorder
-        [HttpPost]
-        [ProducesResponseType(201, Type = typeof(ToolsOrderDto))]
-        [ProducesResponseType(400)]
-        public IActionResult CreateToolsOrder([FromBody] ToolsOrderDto toolsOrderDto)
-        {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var toolsOrder = _mapper.Map<ToolsOrder>(toolsOrderDto);
-
-            if (_toolsOrderRepository.AddToolsOrder(toolsOrder))
-            {
-                return CreatedAtAction("GetOrderById", new { id = toolsOrder.Id }, toolsOrderDto);
-            }
-
-            return BadRequest("Could not create the tools order.");
+            return Ok(orders);
         }
 
-        // GET: api/toolsorder/exists/5
-        [HttpGet("exists/{id}")]
-        [ProducesResponseType(200, Type = typeof(bool))]
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(200, Type = typeof(ToolsOrderDto))]
         [ProducesResponseType(400)]
-        public IActionResult ToolsOrderExists(int id)
+        public IActionResult GetToolsOrderById(int id)
         {
-            if (_toolsOrderRepository.ToolsOrderExists(id))
+            if (!_toolsOrderRepository.ToolsOrderExists(id))
             {
-                return Ok(true);
+                return NotFound();
             }
-            return Ok(false);
+
+            var order = _mapper.Map<ToolsOrderDto>(_toolsOrderRepository.GetOrderById(id));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(order);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateToolOrder([FromQuery] int userId, [FromBody] CreateToolsOrderDto toolOrderCreate)
+        {
+            if (toolOrderCreate == null)
+                return BadRequest(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var toolOrderMap = _mapper.Map<ToolsOrder>(toolOrderCreate);
+            toolOrderMap.Orderer = _userRepository.GetUserById(userId);
+
+            try
+            {
+                // Manually set the ID based on the current max ID from the database
+                var maxId = _toolsOrderRepository.GetAllOrders().Max(v => v.Id);
+                toolOrderMap.Id = maxId + 1;  // Set the new ID to max(id) + 1
+
+                // Create the tool order with the manually set ID
+                if (!_toolsOrderRepository.CreateToolsOrder(toolOrderMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving the tool order.");
+                    return StatusCode(500, ModelState);
+                }
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
+            {
+                ModelState.AddModelError("", "A tool order with the same ID already exists.");
+                return StatusCode(409, ModelState); // HTTP 409 Conflict
+            }
+            return Ok("Successfully created");
+        }
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateToolsOrder(int id, [FromBody] UpdateToolsOrderDto updatedOrder)
+        {
+            if (updatedOrder == null)
+                return BadRequest(ModelState);
+
+            if (!_toolsOrderRepository.ToolsOrderExists(id))
+                return NotFound();
+
+            var existingOrder = _toolsOrderRepository.GetOrderById(id);
+            if (existingOrder == null)
+                return NotFound();
+
+            _mapper.Map(updatedOrder, existingOrder);
+
+            if (!_toolsOrderRepository.UpdateToolsOrder(existingOrder))
+            {
+                ModelState.AddModelError("", "Something went wrong updating the order");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteToolsOrder(int id)
+        {
+            if (!_toolsOrderRepository.ToolsOrderExists(id))
+            {
+                return NotFound();
+            }
+
+            var orderToDelete = _toolsOrderRepository.GetOrderById(id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_toolsOrderRepository.DeleteToolsOrder(orderToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the order");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }
