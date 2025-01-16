@@ -19,14 +19,10 @@ namespace SZEW.Helper
                 .ForMember(dest => dest.VehicleIds, opt => opt.MapFrom(src => src.Vehicles != null
                 ? src.Vehicles.Select(v => v.Id).ToList()
                 : new List<int>()));
-
-            CreateMap<ToolsOrder, ToolsOrderDto>()
-                .ForMember(dest => dest.Tools, opt => opt.MapFrom(src => src.Tools != null
-                ? src.Tools.Select(v => v.Id).ToList()
-                : new List<int>()));
             //CreateMap<Vehicle, VehicleDto>();
             CreateMap<VehicleDto, Vehicle>();
             CreateMap<CreateVehicleDto, Vehicle>();
+
             CreateMap<WorkshopJob, WorkshopJobDto>();
             CreateMap<WorkshopJobDto, WorkshopJob>();
             CreateMap<CreateWorkshopJobDto, WorkshopJob>();
@@ -40,12 +36,20 @@ namespace SZEW.Helper
             CreateMap<Tool, ToolDto>().ReverseMap();
             CreateMap<SparePart, SparePartDto>();
             CreateMap<SparePartsOrder, SparePartsOrderDto>();
-            //CreateMap<ToolsOrder, ToolsOrderDto>();
+            CreateMap<ToolsOrder, ToolsOrderDto>();
+
             CreateMap<ToolsRequest, ToolsRequestDto>();
+            CreateMap<ToolsRequestDto, ToolsRequest>();
+            CreateMap<CreateToolsRequestDto, ToolsRequest>();
+
             CreateMap<SaleDocument, SaleDocumentDto>();
 
             CreateMap<CreateToolsOrderDto, ToolsOrder>();
             CreateMap<UpdateToolsOrderDto, ToolsOrder>();
+            CreateMap<ToolsOrder, ToolsOrderDto>()
+                .ForMember(dest => dest.Tools, opt => opt.MapFrom(src => src.Tools != null
+                ? src.Tools.Select(v => v.Id).ToList()
+                : new List<int>()));
 
 
         }

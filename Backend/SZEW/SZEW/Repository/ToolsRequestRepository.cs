@@ -25,12 +25,6 @@ namespace SZEW.Repository
             return _context.ToolsRequests.FirstOrDefault(r => r.Id == id);
         }
 
-        public bool AddToolsRequest(ToolsRequest toolsRequest)
-        {
-            _context.ToolsRequests.Add(toolsRequest);
-            return Save();
-        }
-
         public bool ToolsRequestExists(int id)
         {
             return _context.ToolsRequests.Any(r => r.Id == id);
@@ -38,7 +32,27 @@ namespace SZEW.Repository
 
         public bool Save()
         {
-            return _context.SaveChanges() > 0;
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        public bool CreateRequest(ToolsRequest request)
+        {
+            _context.Add(request);
+            return Save();
+        }
+
+
+        public bool DeleteRequest(ToolsRequest request)
+        {
+            _context.Remove(request);
+            return Save();
+        }
+
+        public bool VerifyRequest(ToolsRequest request)
+        {
+            _context.ToolsRequests.Update(request);
+            return Save();
         }
     }
 }

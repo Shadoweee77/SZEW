@@ -5,6 +5,9 @@ using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using SZEW.Repository;
 
 namespace SZEW.Controllers
 {
@@ -15,11 +18,15 @@ namespace SZEW.Controllers
     {
         private readonly IToolsRequestRepository _toolsRequestRepository;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _requesterRepository;
+        private readonly IUserRepository _verifierRepository;
 
-        public ToolsRequestController(IToolsRequestRepository toolsRequestRepository, IMapper mapper)
+        public ToolsRequestController(IToolsRequestRepository toolsRequestRepository, IUserRepository reqesterRepository, IUserRepository verifierRepository, IMapper mapper)
         {
-            _toolsRequestRepository = toolsRequestRepository;
-            _mapper = mapper;
+            this._toolsRequestRepository = toolsRequestRepository;
+            this._requesterRepository = reqesterRepository;
+            this._verifierRepository = verifierRepository;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -43,28 +50,106 @@ namespace SZEW.Controllers
             var requestDto = _mapper.Map<ToolsRequestDto>(request);
             return Ok(requestDto);
         }
-
-        [HttpPost]
-        [ProducesResponseType(201, Type = typeof(ToolsRequestDto))]
-        [ProducesResponseType(400)]
-        public IActionResult CreateToolsRequest([FromBody] ToolsRequestDto toolsRequestDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var toolsRequest = _mapper.Map<ToolsRequest>(toolsRequestDto);
-
-            if (!_toolsRequestRepository.AddToolsRequest(toolsRequest))
-                return BadRequest("Could not create tools request.");
-
-            return CreatedAtAction("GetRequestById", new { id = toolsRequest.Id }, toolsRequestDto);
-        }
-
+           
         [HttpGet("exists/{id}")]
         [ProducesResponseType(200, Type = typeof(bool))]
         public IActionResult ToolsRequestExists(int id)
         {
             return Ok(_toolsRequestRepository.ToolsRequestExists(id));
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateToolsRequest([FromQuery] int RequesterId, [FromBody] CreateToolsRequestDto requestCreate)
+        {
+            if (requestCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Map vehicleCreate DTO to the Vehicle model
+            var requestMap = _mapper.Map<ToolsRequest>(requestCreate);
+            requestMap.Requester = _requesterRepository.GetUserById(RequesterId);
+            requestMap.Verified = false;
+
+            try
+            {
+                // Manually set the ID based on the current max ID from the database
+                var maxId = _toolsRequestRepository.GetAllRequests().Max(v => v.Id);
+                requestMap.Id = maxId + 1;  // Set the new ID to max(id) + 1
+
+                // Create the vehicle with the manually set ID
+                if (!_toolsRequestRepository.CreateRequest(requestMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
+            {
+                ModelState.AddModelError("", "A Tools request with the same ID already exists");
+                return StatusCode(409, ModelState); // HTTP 409 Conflict
+            }
+
+            return Ok("Successfully created");
+        }
+
+        [HttpPut("verify/{requestId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult VerifyRequest(int requestId, [FromQuery] int verifierId)
+        {
+            var existingRequest = _toolsRequestRepository.GetRequestById(requestId);
+
+            if (existingRequest == null)
+            {
+                return NotFound();
+            }
+
+            existingRequest.VerifierId = verifierId;
+            existingRequest.Verified = true;
+
+            if (!_toolsRequestRepository.VerifyRequest(existingRequest))
+            {
+                ModelState.AddModelError("", "Something went wrong verifying the request");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{vehicleId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteRequest(int requestId)
+        {
+            if (!_toolsRequestRepository.ToolsRequestExists(requestId))
+            {
+                return NotFound();
+            }
+
+            var requestToDelete = _toolsRequestRepository.GetRequestById(requestId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_toolsRequestRepository.DeleteRequest(requestToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the request");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 }

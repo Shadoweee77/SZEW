@@ -7,8 +7,10 @@ namespace SZEW.Interfaces
     {
         ICollection<ToolsRequest> GetAllRequests();
         ToolsRequest GetRequestById(int id);
-        bool AddToolsRequest(ToolsRequest toolsRequest);
         bool ToolsRequestExists(int id);
+        bool CreateRequest(ToolsRequest request);
+        bool VerifyRequest(ToolsRequest request);
+        bool DeleteRequest(ToolsRequest request);
         bool Save();
     }
 }
