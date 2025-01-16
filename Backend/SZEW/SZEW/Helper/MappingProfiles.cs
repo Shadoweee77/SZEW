@@ -13,7 +13,9 @@ namespace SZEW.Helper
             .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Owner.Id));
 
             CreateMap<WorkshopClient, WorkshopClientDto>()
-                .ForMember(dest => dest.VehicleIds, opt => opt.MapFrom(src => src.Vehicles.Select(v => v.Id).ToList()));
+                .ForMember(dest => dest.VehicleIds, opt => opt.MapFrom(src => src.Vehicles != null
+                ? src.Vehicles.Select(v => v.Id).ToList()
+                : new List<int>()));
             //CreateMap<Vehicle, VehicleDto>();
             CreateMap<VehicleDto, Vehicle>();
             CreateMap<CreateVehicleDto, Vehicle>();

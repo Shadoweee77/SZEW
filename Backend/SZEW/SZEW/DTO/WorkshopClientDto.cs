@@ -8,7 +8,7 @@ namespace SZEW.DTO
         public required string Email { get; set; }
         public required string Address { get; set; }
         public required string PhoneNumber { get; set; }
-        public ICollection<int> VehicleIds { get; set; }
+        public ICollection<int> VehicleIds { get; set; } = new List<int>();
         public required ClientType ClientType { get; set; }
     }
 }
