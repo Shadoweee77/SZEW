@@ -123,9 +123,12 @@ namespace SZEW.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest();
+
             var existingWorkshopJob = _workshopJobRepository.GetJobById(workshopJobId);
             _mapper.Map(updatedWorkshopJob, existingWorkshopJob);
+
             if(workshopJobId!= existingWorkshopJob.Id)
+                return BadRequest(ModelState);
             if (!_workshopJobRepository.UpdateWorkshopJob(existingWorkshopJob))
             {
                 ModelState.AddModelError("", "Something went wrong updating workshop job");
