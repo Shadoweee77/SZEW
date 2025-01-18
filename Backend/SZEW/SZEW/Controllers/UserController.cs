@@ -9,7 +9,7 @@ using AutoMapper;
 
 namespace SZEW.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController: Controller
@@ -22,6 +22,7 @@ namespace SZEW.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<User>))]
         public IActionResult GetUsers()
@@ -35,6 +36,7 @@ namespace SZEW.Controllers
             return Ok(users);
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("{id}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
@@ -52,7 +54,7 @@ namespace SZEW.Controllers
             else return Ok(false);
         }
 
-
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("{id}/type")]
         [ProducesResponseType(200, Type = typeof(UserType))]
         [ProducesResponseType(400)]
