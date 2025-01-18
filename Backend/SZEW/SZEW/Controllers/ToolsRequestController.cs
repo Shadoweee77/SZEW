@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using SZEW.Repository;
@@ -74,18 +73,15 @@ namespace SZEW.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Map vehicleCreate DTO to the Vehicle model
             var requestMap = _mapper.Map<ToolsRequest>(requestCreate);
             requestMap.Requester = _requesterRepository.GetUserById(RequesterId);
-            requestMap.Verified = false;
+            requestMap.Accepted = false;
 
             try
             {
-                // Manually set the ID based on the current max ID from the database
                 var maxId = _toolsRequestRepository.GetAllRequests().Max(v => v.Id);
-                requestMap.Id = maxId + 1;  // Set the new ID to max(id) + 1
+                requestMap.Id = maxId + 1;
 
-                // Create the vehicle with the manually set ID
                 if (!_toolsRequestRepository.CreateRequest(requestMap))
                 {
                     ModelState.AddModelError("", "Something went wrong while saving");
@@ -95,7 +91,7 @@ namespace SZEW.Controllers
             catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
             {
                 ModelState.AddModelError("", "A Tools request with the same ID already exists");
-                return StatusCode(409, ModelState); // HTTP 409 Conflict
+                return StatusCode(409, ModelState);
             }
 
             return Ok("Successfully created");
@@ -115,7 +111,7 @@ namespace SZEW.Controllers
             }
 
             existingRequest.VerifierId = verifierId;
-            existingRequest.Verified = true;
+            existingRequest.Accepted = true;
 
             if (!_toolsRequestRepository.VerifyRequest(existingRequest))
             {

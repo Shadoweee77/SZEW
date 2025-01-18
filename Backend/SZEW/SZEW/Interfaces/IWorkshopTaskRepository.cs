@@ -7,7 +7,6 @@ namespace SZEW.Interfaces
         ICollection<WorkshopTask> GetAllTasks();
         WorkshopTask GetTaskById(int id);
         bool WorkshopTaskExists(int id);
-        //bool MarkComplete(int id, bool isComplete);
         bool CreateWorkshopTask(WorkshopTask workshopTask);
         bool UpdateWorkshopTask(WorkshopTask workshopTask);
         bool DeleteWorkshopTask(WorkshopTask workshopTask);

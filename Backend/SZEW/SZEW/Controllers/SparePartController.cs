@@ -10,7 +10,7 @@ using SZEW.Repository;
 
 namespace SZEW.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SparePartController : Controller

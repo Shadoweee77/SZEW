@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
-using System.Collections.Generic;
 
 namespace SZEW.Controllers
 {

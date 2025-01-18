@@ -29,12 +29,7 @@ namespace SZEW.Data
                 .HasDiscriminator<ClientType>("ClientType")
                 .HasValue<WorkshopIndividualClient>(ClientType.Individual)
                 .HasValue<WorkshopBusinessClient>(ClientType.Business);
-            /*
-             * Relacje wiele do wielu category1 i category2 np zlecenie i usługa.
-             * https://youtu.be/EmV_IBYIlyo?si=FCDPgHcsGV3xhWai&t=800
-            modelBuilder.Entity<Cat1Cat2>()
-                .HasKey(pc => new { pc.cat1Id, pc.cat2Id });
-            */
+
             modelBuilder.Entity<ToolsRequest>()
                 .HasOne(tr => tr.Requester)
                 .WithMany(u => u.ToolsRequestsRequested)

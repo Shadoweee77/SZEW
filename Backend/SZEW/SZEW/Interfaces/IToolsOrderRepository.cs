@@ -1,5 +1,4 @@
 ﻿using SZEW.Models;
-using System.Collections.Generic;
 
 namespace SZEW.Interfaces
 {

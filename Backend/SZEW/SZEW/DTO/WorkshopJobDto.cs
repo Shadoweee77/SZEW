@@ -6,7 +6,7 @@ namespace SZEW.DTO
     {
         public required int Id { get; set; }
         
-        public required bool Complete { get; set; }
+        public required bool IsComplete { get; set; }
         public required string Description { get; set; }
         public required DateTime AdmissionDate { get; set; } = DateTime.Now;
         //public required Vehicle Vehicle { get; set; }

@@ -1,7 +1,6 @@
 ﻿using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Models;
-using System.Linq;
 
 namespace SZEW.Repository
 {
@@ -21,9 +20,7 @@ namespace SZEW.Repository
 
         public SparePartsOrder GetOrderById(int id)
         {
-            return _context.SparePartsOrders
-                           .Where(o => o.Id == id)
-                           .FirstOrDefault();
+            return _context.SparePartsOrders.Where(o => o.Id == id).FirstOrDefault();
         }
 
         public bool SparePartsOrderExists(int id)
@@ -45,8 +42,7 @@ namespace SZEW.Repository
 
         public bool DeleteSparePartsOrder(int id)
         {
-            var order = _context.SparePartsOrders
-                                .FirstOrDefault(o => o.Id == id);
+            var order = _context.SparePartsOrders.FirstOrDefault(o => o.Id == id);
             if (order == null)
             {
                 return false;

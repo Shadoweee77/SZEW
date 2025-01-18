@@ -28,18 +28,12 @@ namespace SZEW.Repository
 
         public SparePart GetSparePartById(int id)
         {
-            return _context.SpareParts
-                .Where(s => s.Id == id)
-                .Include(s => s.Order)
-                .FirstOrDefault();
+            return _context.SpareParts.Where(s => s.Id == id).Include(s => s.Order).FirstOrDefault();
         }
 
         public ICollection<SparePart> GetAllSpareParts()
         {
-            return _context.SpareParts
-                .Include(s => s.Order)
-                .OrderBy(s => s.Id)
-                .ToList();
+            return _context.SpareParts.Include(s => s.Order).OrderBy(s => s.Id).ToList();
         }
 
         public bool Save()

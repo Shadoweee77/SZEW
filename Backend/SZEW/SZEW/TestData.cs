@@ -180,36 +180,6 @@ namespace SZEW
                         Email = "mechanic1@workshop.com",
                         PasswordHash = BCrypt.Net.BCrypt.HashPassword("mechanic"),
                         UserType = UserType.Mechanic
-                    },
-                    new User()
-                    {
-                        Id = 3,
-                        Login = "admin2",
-                        Name = "Admin",
-                        Surname = "Two",
-                        Email = "admin2@workshop.com",
-                        PasswordHash = "hashed_password_789",
-                        UserType = UserType.Admin
-                    },
-                    new User()
-                    {
-                        Id = 4,
-                        Login = "mechanic2",
-                        Name = "Mechanic",
-                        Surname = "Two",
-                        Email = "mechanic2@workshop.com",
-                        PasswordHash = "hashed_password_321",
-                        UserType = UserType.Mechanic
-                    },
-                    new User()
-                    {
-                        Id = 5,
-                        Login = "mechanic3",
-                        Name = "Mechanic",
-                        Surname = "Three",
-                        Email = "mechanic3@workshop.com",
-                        PasswordHash = "hashed_password_654",
-                        UserType = UserType.Mechanic
                     }
                 };
 
@@ -219,7 +189,7 @@ namespace SZEW
                     {
                         Id = 1,
                         Vehicle = vehicles.First(v => v.Id == 1), // Toyota Corolla
-                        Complete = false,
+                        IsComplete = false,
                         Description = "Oil change and tire rotation.",
                         AdmissionDate = DateTime.UtcNow.AddDays(-7),
                         RelatedSaleDocument = null
@@ -228,7 +198,7 @@ namespace SZEW
                     {
                         Id = 2,
                         Vehicle = vehicles.First(v => v.Id == 3), // Ford F-150
-                        Complete = true,
+                        IsComplete = true,
                         Description = "Brake pad replacement and battery check.",
                         AdmissionDate = DateTime.UtcNow.AddDays(-30),
                         RelatedSaleDocument = null
@@ -425,7 +395,7 @@ namespace SZEW
                         Requester = users.First(u => u.Login == "mechanic1"),
                         VerifierId = users.FirstOrDefault(u => u.Login == "admin1")?.Id,
                         Verifier = users.FirstOrDefault(u => u.Login == "admin1"),
-                        Verified = true,
+                        Accepted = true,
                         Description = "Request for a new set of torque wrenches.",
                         Price = 150.00,
                         Amount = 1,
@@ -438,7 +408,7 @@ namespace SZEW
                         Requester = users.First(u => u.Login == "mechanic2"),
                         VerifierId = null, // Not yet verified
                         Verifier = null,
-                        Verified = false,
+                        Accepted = false,
                         Description = "Request for a hydraulic jack.",
                         Price = 300.00,
                         Amount = 1,
@@ -451,7 +421,7 @@ namespace SZEW
                         Requester = users.First(u => u.Login == "mechanic3"),
                         VerifierId = users.FirstOrDefault(u => u.Login == "admin2")?.Id,
                         Verifier = users.FirstOrDefault(u => u.Login == "admin2"),
-                        Verified = true,
+                        Accepted = true,
                         Description = "Request for a pneumatic nail gun.",
                         Price = 200.00,
                         Amount = 2,

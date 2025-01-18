@@ -35,11 +35,6 @@ namespace SZEW.Repository
             return _context.Jobs.Where(p => p.Id == id).FirstOrDefault();
         }
 
-        public bool MarkComplete(int id, bool isComplete)
-        {
-            return _context.Jobs.Where(p => p.Id == id).FirstOrDefault().Complete = isComplete;
-        }
-
         public bool Save()
         {
             var saved = _context.SaveChanges();

@@ -9,7 +9,7 @@ using SZEW.Models;
 
 namespace SZEW.Controllers
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class VehicleController : Controller
@@ -143,17 +143,14 @@ namespace SZEW.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Map vehicleCreate DTO to the Vehicle model
             var vehicleMap = _mapper.Map<Vehicle>(vehicleCreate);
             vehicleMap.Owner = _ownerRepository.GetClient(OwnerId);
 
             try
             {
-                // Manually set the ID based on the current max ID from the database
                 var maxId = _vehicleRepository.GetVehicles().Max(v => v.Id);
-                vehicleMap.Id = maxId + 1;  // Set the new ID to max(id) + 1
+                vehicleMap.Id = maxId + 1;
 
-                // Create the vehicle with the manually set ID
                 if (!_vehicleRepository.CreateVehicle(vehicleMap))
                 {
                     ModelState.AddModelError("", "Something went wrong while saving");

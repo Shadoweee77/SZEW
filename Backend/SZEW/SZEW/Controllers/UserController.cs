@@ -9,7 +9,7 @@ using AutoMapper;
 
 namespace SZEW.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController: Controller

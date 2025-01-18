@@ -1,8 +1,6 @@
 ﻿using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SZEW.Repository
 {
@@ -41,7 +39,6 @@ namespace SZEW.Repository
             _context.Add(request);
             return Save();
         }
-
 
         public bool DeleteRequest(ToolsRequest request)
         {

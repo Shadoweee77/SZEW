@@ -28,18 +28,12 @@ namespace SZEW.Repository
 
         public Tool GetToolById(int id)
         {
-            return _context.Tools
-                .Where(t => t.Id == id)
-                .Include(t => t.Order)
-                .FirstOrDefault();
+            return _context.Tools.Where(t => t.Id == id).Include(t => t.Order).FirstOrDefault();
         }
 
         public ICollection<Tool> GetTools()
         {
-            return _context.Tools
-                .Include(t => t.Order)
-                .OrderBy(t => t.Id)
-                .ToList();
+            return _context.Tools.Include(t => t.Order).OrderBy(t => t.Id).ToList();
         }
 
         public bool Save()

@@ -80,9 +80,8 @@ namespace SZEW.Controllers
             {
                 // Manually set the ID based on the current max ID from the database
                 var maxId = _toolsOrderRepository.GetAllOrders().Max(v => v.Id);
-                toolOrderMap.Id = maxId + 1;  // Set the new ID to max(id) + 1
+                toolOrderMap.Id = maxId + 1;
 
-                // Create the tool order with the manually set ID
                 if (!_toolsOrderRepository.CreateToolsOrder(toolOrderMap))
                 {
                     ModelState.AddModelError("", "Something went wrong while saving the tool order.");
@@ -92,7 +91,7 @@ namespace SZEW.Controllers
             catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
             {
                 ModelState.AddModelError("", "A tool order with the same ID already exists.");
-                return StatusCode(409, ModelState); // HTTP 409 Conflict
+                return StatusCode(409, ModelState);
             }
             return Ok("Successfully created");
         }

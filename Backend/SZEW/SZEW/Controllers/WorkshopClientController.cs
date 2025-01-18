@@ -4,9 +4,11 @@ using SZEW.Models;
 using SZEW.Repository;
 using AutoMapper;
 using SZEW.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SZEW.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class WorkshopClientController : Controller
