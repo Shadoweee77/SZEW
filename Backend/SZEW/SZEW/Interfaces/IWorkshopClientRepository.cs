@@ -9,5 +9,9 @@ namespace SZEW.Interfaces
         ICollection<Vehicle> GetVehicles(int ownerId);
         ClientType GetClientType(int id);
         bool ClientExists(int id);
+        bool CreateWorkshopClient(WorkshopClient workshopClient);
+        bool UpdateWorkshopClient(WorkshopClient workshopClient);
+        bool DeleteWorkshopClient(WorkshopClient workshopClient);
+        bool Save();
     }
 }

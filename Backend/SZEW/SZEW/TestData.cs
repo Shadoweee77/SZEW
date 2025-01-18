@@ -38,7 +38,7 @@ namespace SZEW
                     Email = "support@acme.com",
                     Address = "456 Industry Blvd",
                     PhoneNumber = "800-555-1234",
-                    Name = "ACME Corp",
+                    BusinessName = "ACME Corp",
                     NIP = "1234567890",
                     ClientType = ClientType.Business
                 };
@@ -71,7 +71,7 @@ namespace SZEW
                     Email = "info@widgetworks.com",
                     Address = "789 Factory Lane",
                     PhoneNumber = "800-555-5678",
-                    Name = "Widget Works",
+                    BusinessName = "Widget Works",
                     NIP = "9876543210",
                     ClientType = ClientType.Business
                 };
@@ -188,7 +188,7 @@ namespace SZEW
                     new WorkshopJob()
                     {
                         Id = 1,
-                        Vehicle = vehicles.First(v => v.Id == 1), // Toyota Corolla
+                        Vehicle = vehicles.First(v => v.Id == 1),
                         IsComplete = false,
                         Description = "Oil change and tire rotation.",
                         AdmissionDate = DateTime.UtcNow.AddDays(-7),
@@ -197,7 +197,7 @@ namespace SZEW
                     new WorkshopJob()
                     {
                         Id = 2,
-                        Vehicle = vehicles.First(v => v.Id == 3), // Ford F-150
+                        Vehicle = vehicles.First(v => v.Id == 3),
                         IsComplete = true,
                         Description = "Brake pad replacement and battery check.",
                         AdmissionDate = DateTime.UtcNow.AddDays(-30),
@@ -440,11 +440,6 @@ namespace SZEW
                 dataContext.Vehicles.AddRange(vehicles);
                 dataContext.Users.AddRange(users);
 
-
-
-
-
-
                 dataContext.SaveChanges();
             }
         }
@@ -463,7 +458,6 @@ namespace SZEW
             dataContext.SaleDocuments.RemoveRange(dataContext.SaleDocuments);
             dataContext.Jobs.RemoveRange(dataContext.Jobs);
             dataContext.Tasks.RemoveRange(dataContext.Tasks);
-
 
             dataContext.SaveChanges();
         }
