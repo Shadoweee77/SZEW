@@ -29,7 +29,15 @@ namespace SZEW.Helper
             //CreateMap<WorkshopClient, WorkshopClientDto>();
             
             CreateMap<User, UserDto>();
-            
+
+            CreateMap<CreateUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<UpdateUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
             CreateMap<WorkshopTask, WorkshopTaskDto>();
             CreateMap<CreateWorkshopTaskDto, WorkshopTask>();
 

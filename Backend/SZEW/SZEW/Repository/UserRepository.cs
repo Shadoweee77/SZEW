@@ -36,5 +36,35 @@ namespace SZEW.Repository
         {
             return _context.Users.Where(p => p.Id == id).FirstOrDefault();
         }
+
+        public bool CreateUser(User user)
+        {
+            _context.Add(user);
+            return Save();
+        }
+
+        public bool UpdateUser(User user)
+        {
+            _context.Update(user);
+            return Save();
+        }
+
+        public bool DeleteUser(User user)
+        {
+            _context.Remove(user);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
+
+        public bool ChangePassword(User user)
+        {
+            _context.Update(user);
+            return Save();
+        }
     }
 }
