@@ -268,8 +268,8 @@ namespace SZEW
                         Id = 2,
                         DocumentType = DocumentType.Faktura,
                         IssueDate = DateTime.UtcNow.AddDays(-20),
-                        DocumentIssuer = users.First(u => u.Login == "admin2"),
-                        RelatedJobId = workshopJobs.First(w => w.Id == 2).Id,
+                        DocumentIssuer = users.First(u => u.Login == "admin1"),
+                        RelatedJobId = workshopJobs.First(w => w.Id == 1).Id,
                         RelatedJob = workshopJobs.First(w => w.Id == 2),
                         IsPaid = true
                     }
@@ -404,8 +404,8 @@ namespace SZEW
                     new ToolsRequest()
                     {
                         Id = 2,
-                        RequesterId = users.First(u => u.Login == "mechanic2").Id,
-                        Requester = users.First(u => u.Login == "mechanic2"),
+                        RequesterId = users.First(u => u.Login == "mechanic1").Id,
+                        Requester = users.First(u => u.Login == "mechanic1"),
                         VerifierId = null,
                         Verifier = null,
                         Accepted = false,
@@ -417,10 +417,10 @@ namespace SZEW
                     new ToolsRequest()
                     {
                         Id = 3,
-                        RequesterId = users.First(u => u.Login == "mechanic3").Id,
-                        Requester = users.First(u => u.Login == "mechanic3"),
-                        VerifierId = users.FirstOrDefault(u => u.Login == "admin2")?.Id,
-                        Verifier = users.FirstOrDefault(u => u.Login == "admin2"),
+                        RequesterId = users.First(u => u.Login == "mechanic1").Id,
+                        Requester = users.First(u => u.Login == "mechanic1"),
+                        VerifierId = users.FirstOrDefault(u => u.Login == "admin1")?.Id,
+                        Verifier = users.FirstOrDefault(u => u.Login == "admin1"),
                         Accepted = true,
                         Description = "Request for a pneumatic nail gun.",
                         Price = 200.00,

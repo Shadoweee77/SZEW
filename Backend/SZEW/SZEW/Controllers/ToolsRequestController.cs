@@ -122,7 +122,7 @@ namespace SZEW.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{vehicleId}")]
+        [HttpDelete("{requestId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

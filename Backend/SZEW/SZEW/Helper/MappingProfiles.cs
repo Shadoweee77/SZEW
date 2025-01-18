@@ -8,10 +8,6 @@ namespace SZEW.Helper
     {
         public MappingProfiles()
         {
-
-            CreateMap<Vehicle, VehicleDto>()
-            .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Owner.Id));
-
             CreateMap<Tool, ToolDto>().ReverseMap();
             CreateMap<Tool, CreateToolDto>().ReverseMap();
 
@@ -19,14 +15,15 @@ namespace SZEW.Helper
                 .ForMember(dest => dest.VehicleIds, opt => opt.MapFrom(src => src.Vehicles != null
                 ? src.Vehicles.Select(v => v.Id).ToList()
                 : new List<int>()));
-            //CreateMap<Vehicle, VehicleDto>();
+
+            CreateMap<Vehicle, VehicleDto>()
+            .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Owner.Id));
             CreateMap<VehicleDto, Vehicle>();
             CreateMap<CreateVehicleDto, Vehicle>();
 
             CreateMap<WorkshopJob, WorkshopJobDto>();
             CreateMap<WorkshopJobDto, WorkshopJob>();
             CreateMap<CreateWorkshopJobDto, WorkshopJob>();
-            //CreateMap<WorkshopClient, WorkshopClientDto>();
             
             CreateMap<User, UserDto>();
 
@@ -41,15 +38,17 @@ namespace SZEW.Helper
             CreateMap<WorkshopTask, WorkshopTaskDto>();
             CreateMap<CreateWorkshopTaskDto, WorkshopTask>();
 
-            CreateMap<Tool, ToolDto>().ReverseMap();
             CreateMap<SparePart, SparePartDto>();
             CreateMap<CreateSparePartDto, SparePart>();
+
             CreateMap<SparePartsOrder, SparePartsOrderDto>();
+
             CreateMap<ToolsOrder, ToolsOrderDto>();
+            CreateMap<CreateToolsRequestDto, ToolsRequest>();
 
             CreateMap<ToolsRequest, ToolsRequestDto>();
             CreateMap<ToolsRequestDto, ToolsRequest>();
-            CreateMap<CreateToolsRequestDto, ToolsRequest>();
+           
 
             CreateMap<SaleDocument, SaleDocumentDto>();
 
@@ -59,8 +58,6 @@ namespace SZEW.Helper
                 .ForMember(dest => dest.Tools, opt => opt.MapFrom(src => src.Tools != null
                 ? src.Tools.Select(v => v.Id).ToList()
                 : new List<int>()));
-
-
         }
     }
 }
