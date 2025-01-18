@@ -1,15 +1,9 @@
 namespace SZEW_MAUI.Views;
 
-public partial class AdminHomePage : ContentPage
+public partial class AdminHomePage : Shell
 {
 	public AdminHomePage()
 	{
-		InitializeComponent();
+        InitializeComponent();
 	}
-    private async void LogoutButton_Clicked(object sender, EventArgs e) {
-        if(await DisplayAlert("Czy na pewno?", "Zostaniesz wylogowany.", "Tak", "Nie")) {
-            SecureStorage.RemoveAll();
-            await Shell.Current.GoToAsync("///login");
-        }
-    }
 }
