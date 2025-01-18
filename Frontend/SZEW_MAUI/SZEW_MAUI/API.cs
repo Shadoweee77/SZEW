@@ -13,7 +13,7 @@ namespace SZEW_MAUI {
         private static string? token;
         private static string? login;
         private static string? password;
-        private static string address = "http://localhost:80/api/";
+        private static string address = "http://127.0.0.1:80/api/";
         private class loginResponse {
             public string? token { get; set; }
         }
@@ -46,6 +46,7 @@ namespace SZEW_MAUI {
             password = pass;
             SecureStorage.SetAsync("login", login);
             SecureStorage.SetAsync("password", password);
+            token = null;
         }
         private static bool retrieveCredentials() {
             try {
@@ -110,7 +111,7 @@ namespace SZEW_MAUI {
             request.AddHeader("Authorization", "Bearer " + token);
             try {
                 var executeTask = client.ExecuteAsync(request);
-                if(executeTask.Wait(100)) {
+                if(executeTask.Wait(1000)) {
                     var response = executeTask.Result;
                     if(response != null) {
                         if(response.StatusCode == System.Net.HttpStatusCode.OK && response.Content != null) {
