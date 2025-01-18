@@ -7,8 +7,8 @@ namespace SZEW_MAUI
         {
             InitializeComponent();
             //Register all routes
-            Routing.RegisterRoute("mechanichome", typeof(MechanicHomePage));
-            Routing.RegisterRoute("adminhome", typeof(AdminHomePage));
+            Routing.RegisterRoute("mechanicshell", typeof(MechanicShell));
+            Routing.RegisterRoute("adminshell", typeof(AdminShell));
             Routing.RegisterRoute("login", typeof(LoginPage));
             Routing.RegisterRoute("loading", typeof(LoadingPage));
         }

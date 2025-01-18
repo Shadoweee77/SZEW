@@ -9,6 +9,7 @@ public partial class SettingsPage : ContentPage
     private async void LogoutButton_Clicked(object sender, EventArgs e) {
         if(await DisplayAlert("Czy na pewno?", "Zostaniesz wylogowany.", "Tak", "Nie")) {
             SecureStorage.RemoveAll();
+            API.setCredentials("", "");
             await Shell.Current.GoToAsync("///login");
         }
     }

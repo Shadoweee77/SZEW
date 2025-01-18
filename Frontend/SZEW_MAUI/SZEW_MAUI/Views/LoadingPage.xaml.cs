@@ -9,10 +9,10 @@ public partial class LoadingPage : ContentPage
     protected override async void OnNavigatedTo(NavigatedToEventArgs args) {
         int usertype = API.loginStatus();
         if(usertype == 2) {
-            await Shell.Current.GoToAsync("/mechanichome");
+            await Shell.Current.GoToAsync("/mechanicshell");
         }
         else if(usertype == 1) {
-            await Shell.Current.GoToAsync("/adminhome");
+            await Shell.Current.GoToAsync("/adminshell");
         }
         else {
             await Shell.Current.GoToAsync("/login");

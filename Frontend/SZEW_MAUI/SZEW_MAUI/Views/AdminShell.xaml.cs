@@ -1,8 +1,8 @@
 namespace SZEW_MAUI.Views;
 
-public partial class AdminHomePage : Shell
+public partial class AdminShell : Shell
 {
-	public AdminHomePage()
+	public AdminShell()
 	{
         InitializeComponent();
 	}

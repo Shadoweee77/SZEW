@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="SZEW_MAUI.Views.MechanicShell"
+       x:Class="SZEW_MAUI.Views.MechanicShell"
+       Title="SZEW - Mechanik">
+    <TabBar>
+        <Tab Title="Strona główna">
+            <ShellContent ContentTemplate="{DataTemplate views:MechanicMainPage}" />
+        </Tab>
+        <Tab Title="Zgłoś zapotrzebowanie na narzędzia">
+            <ShellContent ContentTemplate="{DataTemplate views:RequestToolsPage}" />
+        </Tab>
+        <Tab Title="Rejestruj zamówienie części">
+            <ShellContent ContentTemplate="{DataTemplate views:RegisterPartsPurchasePage}" />
+        </Tab>
+        <Tab Title="Pojazdy">
+            <ShellContent ContentTemplate="{DataTemplate views:VehiclesPage}" />
+        </Tab>
+        <Tab Title="Moje ustawienia">
+            <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
+        </Tab>
+    </TabBar>
+</Shell>

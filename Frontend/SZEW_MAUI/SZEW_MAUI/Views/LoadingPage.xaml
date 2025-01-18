@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SZEW_MAUI.Views.LoadingPage"
-             Title="LoadingPage">
+             Title="Ładowanie">
     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
         <ActivityIndicator IsRunning="True" HeightRequest="50" WidthRequest="50" IsVisible="True" />
         <Label Text="Sprawdzanie uprawnień" HorizontalOptions="Center" />

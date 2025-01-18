@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SZEW_MAUI.Views.UsersPage"
-             Title="Użytkownicy">
+             x:Class="SZEW_MAUI.Views.MechanicMainPage"
+             Title="Strona główna">
     <VerticalStackLayout>
         <Label 
-            Text="Użytkownicy"
+            Text="Strona główna"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>

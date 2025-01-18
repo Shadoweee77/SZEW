@@ -11,13 +11,13 @@ public partial class LoginPage : ContentPage
         API.setCredentials(Username.Text, Password.Text);
         int userType = API.loginStatus();
         if(userType == 1) {
-            await Shell.Current.GoToAsync("/adminhome");
+            await Shell.Current.GoToAsync("/adminshell");
         }
         else if(userType == 2) {
-            await Shell.Current.GoToAsync("/mechanichome");
+            await Shell.Current.GoToAsync("/mechanicshell");
         }
         else {
-            await DisplayAlert("Login failed", "Username or password if invalid", "Try again");
+            await DisplayAlert("Nie uda³o siê zalogowaæ", "Login lub has³o s¹ nieprawid³owe.", "Spróbuj ponownie");
         }
     }
 }
