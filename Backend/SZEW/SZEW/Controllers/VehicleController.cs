@@ -166,9 +166,6 @@ namespace SZEW.Controllers
             return Ok("Successfully created");
         }
 
-
-
-
         [HttpPut("{vehicleId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]

@@ -280,16 +280,16 @@ namespace SZEW
                     new SparePartsOrder()
                     {
                         Id = 1,
-                        Orderer = users.First(u => u.Login == "admin1"), // Example user as the orderer
+                        Orderer = users.First(u => u.Login == "admin1"),
                         RegistrationDate = DateTime.UtcNow.AddDays(-10),
-                        SpareParts = null // Will be associated after
+                        SpareParts = null
                     },
                     new SparePartsOrder()
                     {
                         Id = 2,
-                        Orderer = users.First(u => u.Login == "mechanic1"), // Example user as the orderer
+                        Orderer = users.First(u => u.Login == "mechanic1"),
                         RegistrationDate = DateTime.UtcNow.AddDays(-5),
-                        SpareParts = null // Will be associated after
+                        SpareParts = null
                     }
                 };
 
@@ -334,14 +334,14 @@ namespace SZEW
                     new ToolsOrder()
                     {
                         Id = 1,
-                        Orderer = users.First(u => u.Login == "admin1"), // Example user as orderer
-                        RegistrationDate = DateTime.UtcNow.AddDays(-20), // Order placed 20 days ago
+                        Orderer = users.First(u => u.Login == "admin1"),
+                        RegistrationDate = DateTime.UtcNow.AddDays(-20),
                     },
                     new ToolsOrder()
                     {
                         Id = 2,
-                        Orderer = users.First(u => u.Login == "mechanic1"), // Example user as orderer
-                        RegistrationDate = DateTime.UtcNow.AddDays(-10), // Order placed 10 days ago
+                        Orderer = users.First(u => u.Login == "mechanic1"),
+                        RegistrationDate = DateTime.UtcNow.AddDays(-10),
                     }
                 };
 
@@ -399,20 +399,20 @@ namespace SZEW
                         Description = "Request for a new set of torque wrenches.",
                         Price = 150.00,
                         Amount = 1,
-                        RequestDate = DateTime.UtcNow.AddDays(-10) // Requested 10 days ago
+                        RequestDate = DateTime.UtcNow.AddDays(-10)
                     },
                     new ToolsRequest()
                     {
                         Id = 2,
                         RequesterId = users.First(u => u.Login == "mechanic2").Id,
                         Requester = users.First(u => u.Login == "mechanic2"),
-                        VerifierId = null, // Not yet verified
+                        VerifierId = null,
                         Verifier = null,
                         Accepted = false,
                         Description = "Request for a hydraulic jack.",
                         Price = 300.00,
                         Amount = 1,
-                        RequestDate = DateTime.UtcNow.AddDays(-5) // Requested 5 days ago
+                        RequestDate = DateTime.UtcNow.AddDays(-5)
                     },
                     new ToolsRequest()
                     {
@@ -425,7 +425,7 @@ namespace SZEW
                         Description = "Request for a pneumatic nail gun.",
                         Price = 200.00,
                         Amount = 2,
-                        RequestDate = DateTime.UtcNow.AddDays(-2) // Requested 2 days ago
+                        RequestDate = DateTime.UtcNow.AddDays(-2)
                     }
                 };
 

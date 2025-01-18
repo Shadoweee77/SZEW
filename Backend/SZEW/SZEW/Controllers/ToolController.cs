@@ -82,7 +82,7 @@ namespace SZEW.Controllers
             }
             catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
             {
-                ModelState.AddModelError("", "A vehicle with the same ID already exists");
+                ModelState.AddModelError("", "A tool with the same ID already exists");
                 return StatusCode(409, ModelState);
             }
             return Ok("Successfully created");

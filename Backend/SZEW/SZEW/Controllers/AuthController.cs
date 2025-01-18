@@ -26,14 +26,12 @@ namespace SZEW.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest model)
         {
-            // Validate user credentials
             var user = _userRepository.GetByLogin(model.Login);
             if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
             {
                 return Unauthorized("Invalid login or password");
             }
 
-            // Generate JWT token
             var claims = new[]
             {
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -57,11 +55,15 @@ namespace SZEW.Controllers
                 Token = new JwtSecurityTokenHandler().WriteToken(token)
             });
         }
+        /*
+         * Logout można by zrobić na zasadzie przeniesienia tokenu do blacklisty, chociaż
+         * lepszym rozwiązaniem było by zrobić token do Auth i token pod renew Autha z dłuższym TTL 
+         */
     }
 
     public class LoginRequest
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public required string Login { get; set; }
+        public required string Password { get; set; }
     }
 }
