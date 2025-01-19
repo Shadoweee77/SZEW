@@ -24,11 +24,6 @@ namespace SZEW.Repository
             return _context.SaleDocuments.Include(SaleDocument => SaleDocument.RelatedJob).Include(SaleDocument => SaleDocument.DocumentIssuer).FirstOrDefault(d => d.Id == id);
         }
 
-        public bool AddSaleDocument(SaleDocument saleDocument)
-        {
-            _context.SaleDocuments.Add(saleDocument);
-            return Save();
-        }
 
         public bool SaleDocumentExists(int id)
         {
@@ -38,6 +33,23 @@ namespace SZEW.Repository
         public bool Save()
         {
             return _context.SaveChanges() > 0;
+        }
+
+        public bool CreateSaleDocument(SaleDocument saleDocument)
+        {
+            _context.SaleDocuments.Add(saleDocument);
+            return Save();
+        }
+        public bool UpdateSaleDocument(SaleDocument saleDocument)
+        {
+            _context.Update(saleDocument);
+            return Save();
+        }
+
+        public bool DeleteSaleDocument(SaleDocument saleDocument)
+        {
+            _context.Remove(saleDocument);
+            return Save();
         }
     }
 }

@@ -6,6 +6,7 @@ using Npgsql;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
+using SZEW.Repository;
 
 namespace SZEW.Controllers
 {
@@ -148,7 +149,7 @@ namespace SZEW.Controllers
 
             try
             {
-                var maxId = _vehicleRepository.GetVehicles().Max(v => v.Id);
+                var maxId = _vehicleRepository.GetVehicles().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 vehicleMap.Id = maxId + 1;
 
                 if (!_vehicleRepository.CreateVehicle(vehicleMap))

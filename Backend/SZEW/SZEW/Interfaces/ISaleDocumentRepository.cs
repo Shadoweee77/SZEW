@@ -6,8 +6,11 @@ namespace SZEW.Interfaces
     {
         ICollection<SaleDocument> GetAllDocuments();
         SaleDocument GetDocumentById(int id);
-        bool AddSaleDocument(SaleDocument saleDocument);
+        
         bool SaleDocumentExists(int id);
+        bool CreateSaleDocument(SaleDocument saleDocument);
+        bool UpdateSaleDocument(SaleDocument saleDocument);
+        bool DeleteSaleDocument(SaleDocument saleDocument);
         bool Save();
     }
 }

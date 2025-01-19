@@ -51,6 +51,8 @@ namespace SZEW.Helper
             CreateMap<UpdateToolsRequestDto, ToolsRequest>();
 
             CreateMap<SaleDocument, SaleDocumentDto>();
+            CreateMap<SaleDocumentDto, SaleDocument>();
+            CreateMap<CreateSaleDocumentDto, SaleDocument>();
 
             CreateMap<ToolsOrder, ToolsOrderDto>();
             CreateMap<CreateToolsOrderDto, ToolsOrder>();

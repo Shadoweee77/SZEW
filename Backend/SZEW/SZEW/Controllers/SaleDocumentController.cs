@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Security.Claims;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
+using SZEW.Repository;
 
 namespace SZEW.Controllers
 {
@@ -13,12 +17,16 @@ namespace SZEW.Controllers
     public class SaleDocumentController : ControllerBase
     {
         private readonly ISaleDocumentRepository _saleDocumentRepository;
+        private readonly IUserRepository _issuerRepository;
         private readonly IMapper _mapper;
+        private readonly IWorkshopJobRepository _workshopJobRepository;
 
-        public SaleDocumentController(ISaleDocumentRepository saleDocumentRepository, IMapper mapper)
+        public SaleDocumentController(ISaleDocumentRepository saleDocumentRepository, IUserRepository issuerRepository, IWorkshopJobRepository workshopJobRepository, IMapper mapper)
         {
             _saleDocumentRepository = saleDocumentRepository;
             _mapper = mapper;
+            _issuerRepository = issuerRepository;
+            _workshopJobRepository = workshopJobRepository;
         }
 
         [HttpGet]
@@ -42,22 +50,7 @@ namespace SZEW.Controllers
             var documentDto = _mapper.Map<SaleDocumentDto>(document);
             return Ok(documentDto);
         }
-
-        [HttpPost]
-        [ProducesResponseType(201, Type = typeof(SaleDocumentDto))]
-        [ProducesResponseType(400)]
-        public IActionResult AddSaleDocument([FromBody] SaleDocumentDto saleDocumentDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var saleDocument = _mapper.Map<SaleDocument>(saleDocumentDto);
-
-            if (!_saleDocumentRepository.AddSaleDocument(saleDocument))
-                return BadRequest("Could not add the sale document.");
-
-            return CreatedAtAction("GetDocumentById", new { id = saleDocument.Id }, saleDocumentDto);
-        }
+        
 
         [HttpGet("exists/{id}")]
         [ProducesResponseType(200, Type = typeof(bool))]
@@ -65,5 +58,104 @@ namespace SZEW.Controllers
         {
             return Ok(_saleDocumentRepository.SaleDocumentExists(id));
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateSaleDocument([FromQuery] int relatedJobId, [FromBody] CreateSaleDocumentDto saleDocumentCreate)
+        {
+            if (saleDocumentCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var issuerIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (issuerIdClaim == null)
+            {
+                return Unauthorized("Requester ID not found in the token.");
+            }
+
+            var issuerId = int.Parse(issuerIdClaim.Value);
+            var saleDocumentMap = _mapper.Map<SaleDocument>(saleDocumentCreate);
+            saleDocumentMap.DocumentIssuer = _issuerRepository.GetUserById(issuerId);
+            saleDocumentMap.RelatedJob = _workshopJobRepository.GetJobById(relatedJobId);
+            try
+            {
+                var maxId = _saleDocumentRepository.GetAllDocuments().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                saleDocumentMap.Id = maxId + 1;
+
+                if (!_saleDocumentRepository.CreateSaleDocument(saleDocumentMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
+            {
+                ModelState.AddModelError("", "A sale document with the same ID already exists");
+                return StatusCode(409, ModelState); // HTTP 409 Conflict
+            }
+
+            return Ok("Successfully created");
+        }
+        [HttpPut("{SaleDocumentId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateSaleDocument(int SaleDocumentId, [FromBody] CreateSaleDocumentDto updatedSaleDocument)
+        {
+            if (updatedSaleDocument == null)
+                return BadRequest(ModelState);
+
+            if (!_saleDocumentRepository.SaleDocumentExists(SaleDocumentId))
+                return NotFound();
+
+            var existingSaleDocument = _saleDocumentRepository.GetDocumentById(SaleDocumentId);
+            if (existingSaleDocument == null)
+                return NotFound();
+
+            _mapper.Map(updatedSaleDocument, existingSaleDocument);
+            if (SaleDocumentId != existingSaleDocument.Id)
+                return BadRequest(ModelState);
+
+            if (!_saleDocumentRepository.UpdateSaleDocument(existingSaleDocument))
+            {
+                ModelState.AddModelError("", "Something went wrong updating the sale document");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+        [HttpDelete("{saleDocumentId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteSaleDocument(int saleDocumentId)
+        {
+            if (!_saleDocumentRepository.SaleDocumentExists(saleDocumentId))
+            {
+                return NotFound();
+            }
+
+            var saleDocumentToDelete = _saleDocumentRepository.GetDocumentById(saleDocumentId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_saleDocumentRepository.DeleteSaleDocument(saleDocumentToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting the sale document");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
     }
 }

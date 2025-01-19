@@ -118,7 +118,7 @@ namespace SZEW.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Createuser([FromBody] CreateUserDto userCreate)
+        public IActionResult CreateUser([FromBody] CreateUserDto userCreate)
         {
             if (userCreate == null)
                 return BadRequest(ModelState);
