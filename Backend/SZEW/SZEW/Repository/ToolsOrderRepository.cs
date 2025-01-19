@@ -16,12 +16,12 @@ namespace SZEW.Repository
 
         public ICollection<ToolsOrder> GetAllOrders()
         {
-            return _context.ToolsOrders.OrderBy(o => o.Id).ToList();
+            return _context.ToolsOrders.OrderBy(o => o.Id).Include(ToolsOrder => ToolsOrder.Orderer).ToList();
         }
 
         public ToolsOrder GetOrderById(int id)
         {
-            return _context.ToolsOrders.Include(o => o.Tools).FirstOrDefault(o => o.Id == id);
+            return _context.ToolsOrders.Include(o => o.Tools).Include(ToolsOrder => ToolsOrder.Orderer).FirstOrDefault(o => o.Id == id);
         }
 
         public bool ToolsOrderExists(int id)

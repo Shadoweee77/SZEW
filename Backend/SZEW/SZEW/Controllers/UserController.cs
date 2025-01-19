@@ -131,7 +131,7 @@ namespace SZEW.Controllers
             try
             {
                 // Manually set the ID based on the current max ID from the database
-                var maxId = _userRepository.GetUsers().Max(v => v.Id);
+                var maxId = _userRepository.GetUsers().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 userMap.Id = maxId + 1;
 
                 userMap.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.PlaintextPassword);

@@ -99,7 +99,7 @@ namespace SZEW.Controllers
 
             try
             {
-                var maxId = _workshopTaskRepository.GetAllTasks().Max(v => v.Id);
+                var maxId = _workshopTaskRepository.GetAllTasks().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 workshopTaskMap.Id = maxId + 1;
 
                 if (!_workshopTaskRepository.CreateWorkshopTask(workshopTaskMap))

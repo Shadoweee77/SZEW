@@ -79,7 +79,7 @@ namespace SZEW.Controllers
             try
             {
                 // Manually set the ID based on the current max ID from the database
-                var maxId = _toolsOrderRepository.GetAllOrders().Max(v => v.Id);
+                var maxId = _toolsOrderRepository.GetAllOrders().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 toolOrderMap.Id = maxId + 1;
 
                 if (!_toolsOrderRepository.CreateToolsOrder(toolOrderMap))

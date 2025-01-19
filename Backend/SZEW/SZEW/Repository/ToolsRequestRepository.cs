@@ -46,7 +46,8 @@ namespace SZEW.Repository
             return Save();
         }
 
-        public bool VerifyRequest(ToolsRequest request)
+
+        public bool UpdateRequest(ToolsRequest request)
         {
             _context.ToolsRequests.Update(request);
             return Save();

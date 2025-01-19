@@ -70,7 +70,7 @@ namespace SZEW.Controllers
 
             try
             {
-                var maxId = _sparePartRepository.GetAllSpareParts().Max(s => s.Id);
+                var maxId = _sparePartRepository.GetAllSpareParts().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 sparePartMap.Id = maxId + 1;
 
                 if (!_sparePartRepository.CreateSparePart(sparePartMap))

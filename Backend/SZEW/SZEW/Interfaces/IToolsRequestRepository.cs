@@ -8,7 +8,7 @@ namespace SZEW.Interfaces
         ToolsRequest GetRequestById(int id);
         bool ToolsRequestExists(int id);
         bool CreateRequest(ToolsRequest request);
-        bool VerifyRequest(ToolsRequest request);
+        bool UpdateRequest(ToolsRequest request);
         bool DeleteRequest(ToolsRequest request);
         bool Save();
     }

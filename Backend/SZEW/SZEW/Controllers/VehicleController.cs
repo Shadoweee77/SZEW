@@ -170,7 +170,7 @@ namespace SZEW.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateVehicle(int vehicleId, [FromBody] VehicleDto updatedVehicle)
+        public IActionResult UpdateVehicle(int vehicleId, [FromBody] UpdateVehicleDto updatedVehicle)
         {
             if (updatedVehicle == null)
                 return BadRequest(ModelState);
@@ -179,6 +179,7 @@ namespace SZEW.Controllers
                 return NotFound();
 
             var existingVehicle = _vehicleRepository.GetVehicle(vehicleId);
+            existingVehicle.Owner = _ownerRepository.GetClient(updatedVehicle.OwnerId);
             if (existingVehicle == null)
                 return NotFound();
 

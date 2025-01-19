@@ -1,4 +1,5 @@
-﻿using SZEW.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Models;
 
@@ -15,12 +16,12 @@ namespace SZEW.Repository
 
         public ICollection<SparePartsOrder> GetAllOrders()
         {
-            return _context.SparePartsOrders.OrderBy(o => o.Id).ToList();
+            return _context.SparePartsOrders.Include(SparePartsOrder => SparePartsOrder.Orderer).OrderBy(o => o.Id).ToList();
         }
 
         public SparePartsOrder GetOrderById(int id)
         {
-            return _context.SparePartsOrders.Where(o => o.Id == id).FirstOrDefault();
+            return _context.SparePartsOrders.Include(SparePartsOrder => SparePartsOrder.Orderer).Where(o => o.Id == id).FirstOrDefault();
         }
 
         public bool SparePartsOrderExists(int id)

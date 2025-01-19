@@ -7,6 +7,7 @@ using SZEW.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using SZEW.Repository;
+using System.Security.Claims;
 
 namespace SZEW.Controllers
 {
@@ -18,13 +19,11 @@ namespace SZEW.Controllers
         private readonly IToolsRequestRepository _toolsRequestRepository;
         private readonly IMapper _mapper;
         private readonly IUserRepository _requesterRepository;
-        private readonly IUserRepository _verifierRepository;
 
-        public ToolsRequestController(IToolsRequestRepository toolsRequestRepository, IUserRepository reqesterRepository, IUserRepository verifierRepository, IMapper mapper)
+        public ToolsRequestController(IToolsRequestRepository toolsRequestRepository, IUserRepository reqesterRepository, IMapper mapper)
         {
             this._toolsRequestRepository = toolsRequestRepository;
             this._requesterRepository = reqesterRepository;
-            this._verifierRepository = verifierRepository;
             this._mapper = mapper;
         }
 
@@ -60,7 +59,7 @@ namespace SZEW.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateToolsRequest([FromQuery] int RequesterId, [FromBody] CreateToolsRequestDto requestCreate)
+        public IActionResult CreateToolsRequest([FromBody] CreateToolsRequestDto requestCreate)
         {
             if (requestCreate == null)
             {
@@ -72,14 +71,21 @@ namespace SZEW.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var requesterIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (requesterIdClaim == null)
+            {
+                return Unauthorized("Requester ID not found in the token.");
+            }
+
+            var requesterId = int.Parse(requesterIdClaim.Value);
 
             var requestMap = _mapper.Map<ToolsRequest>(requestCreate);
-            requestMap.Requester = _requesterRepository.GetUserById(RequesterId);
+            requestMap.Requester = _requesterRepository.GetUserById(requesterId);
             requestMap.Accepted = false;
 
             try
             {
-                var maxId = _toolsRequestRepository.GetAllRequests().Max(v => v.Id);
+                var maxId = _toolsRequestRepository.GetAllRequests().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 requestMap.Id = maxId + 1;
 
                 if (!_toolsRequestRepository.CreateRequest(requestMap))
@@ -101,19 +107,27 @@ namespace SZEW.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult VerifyRequest(int requestId, [FromQuery] int verifierId)
+        public IActionResult UpdateRequest(int requestId, [FromBody] UpdateToolsRequestDto updatedRequest)
         {
+            if (updatedRequest == null)
+                return BadRequest(ModelState);
+            if (!_toolsRequestRepository.ToolsRequestExists(requestId))
+                return NotFound();
             var existingRequest = _toolsRequestRepository.GetRequestById(requestId);
-
             if (existingRequest == null)
             {
                 return NotFound();
             }
+            var verifierIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
 
+
+            var verifierId = int.Parse(verifierIdClaim.Value);
             existingRequest.VerifierId = verifierId;
-            existingRequest.Accepted = true;
+            _mapper.Map(updatedRequest, existingRequest);
 
-            if (!_toolsRequestRepository.VerifyRequest(existingRequest))
+            if(requestId != existingRequest.Id)
+                return BadRequest(ModelState);
+            if (!_toolsRequestRepository.UpdateRequest(existingRequest))
             {
                 ModelState.AddModelError("", "Something went wrong verifying the request");
                 return StatusCode(500, ModelState);

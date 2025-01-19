@@ -20,6 +20,7 @@ namespace SZEW.Helper
             .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Owner.Id));
             CreateMap<VehicleDto, Vehicle>();
             CreateMap<CreateVehicleDto, Vehicle>();
+            CreateMap<UpdateVehicleDto, Vehicle>();
 
             CreateMap<WorkshopJob, WorkshopJobDto>();
             CreateMap<WorkshopJobDto, WorkshopJob>();
@@ -43,15 +44,15 @@ namespace SZEW.Helper
 
             CreateMap<SparePartsOrder, SparePartsOrderDto>();
 
-            CreateMap<ToolsOrder, ToolsOrderDto>();
+            
             CreateMap<CreateToolsRequestDto, ToolsRequest>();
-
             CreateMap<ToolsRequest, ToolsRequestDto>();
             CreateMap<ToolsRequestDto, ToolsRequest>();
-           
+            CreateMap<UpdateToolsRequestDto, ToolsRequest>();
 
             CreateMap<SaleDocument, SaleDocumentDto>();
 
+            CreateMap<ToolsOrder, ToolsOrderDto>();
             CreateMap<CreateToolsOrderDto, ToolsOrder>();
             CreateMap<UpdateToolsOrderDto, ToolsOrder>();
             CreateMap<ToolsOrder, ToolsOrderDto>()

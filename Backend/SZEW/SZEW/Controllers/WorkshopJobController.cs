@@ -90,7 +90,7 @@ namespace SZEW.Controllers
 
             try
             {
-                var maxId = _workshopJobRepository.GetAllJobs().Max(v => v.Id);
+                var maxId = _workshopJobRepository.GetAllJobs().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 workshopJobMap.Id = maxId + 1;
 
                 if (!_workshopJobRepository.CreateWorkshopJob(workshopJobMap))

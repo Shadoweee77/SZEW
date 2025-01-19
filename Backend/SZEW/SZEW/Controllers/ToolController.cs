@@ -71,7 +71,7 @@ namespace SZEW.Controllers
             try
             {
                 // Manually set the ID based on the current max ID from the database
-                var maxId = _toolRepository.GetTools().Max(v => v.Id);
+                var maxId = _toolRepository.GetTools().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 toolMap.Id = maxId + 1;
 
                 if (!_toolRepository.CreateTool(toolMap))

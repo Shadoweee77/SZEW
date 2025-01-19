@@ -1,4 +1,5 @@
-﻿using SZEW.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SZEW.Data;
 using SZEW.Interfaces;
 using SZEW.Models;
 
@@ -15,12 +16,12 @@ namespace SZEW.Repository
 
         public ICollection<SaleDocument> GetAllDocuments()
         {
-            return _context.SaleDocuments.OrderBy(d => d.Id).ToList();
+            return _context.SaleDocuments.Include(SaleDocument => SaleDocument.RelatedJob).Include(SaleDocument => SaleDocument.DocumentIssuer).OrderBy(d => d.Id).ToList();
         }
 
         public SaleDocument GetDocumentById(int id)
         {
-            return _context.SaleDocuments.FirstOrDefault(d => d.Id == id);
+            return _context.SaleDocuments.Include(SaleDocument => SaleDocument.RelatedJob).Include(SaleDocument => SaleDocument.DocumentIssuer).FirstOrDefault(d => d.Id == id);
         }
 
         public bool AddSaleDocument(SaleDocument saleDocument)
