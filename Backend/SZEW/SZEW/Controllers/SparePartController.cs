@@ -64,7 +64,10 @@ namespace SZEW.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
+            if (!_sparePartsOrderRepository.SparePartsOrderExists(orderId))
+            {
+                return BadRequest($"Spare parts order {orderId} is not valid");
+            }
             var sparePartMap = _mapper.Map<SparePart>(sparePartCreate);
             sparePartMap.Order = _sparePartsOrderRepository.GetOrderById(orderId);
 

@@ -84,6 +84,11 @@ namespace SZEW.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            if (!_vehicleRepository.VehicleExists(VehicleId))
+            {
+                return BadRequest($"Vehicle {VehicleId} is not valid");
+            }
             // duplicate check could be added here maybe by VehicleId + description, idk if needed
             var workshopJobMap = _mapper.Map<WorkshopJob>(workshopJobCreate);
             workshopJobMap.Vehicle = _vehicleRepository.GetVehicle(VehicleId);

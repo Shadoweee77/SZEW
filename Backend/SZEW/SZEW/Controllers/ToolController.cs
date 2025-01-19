@@ -64,8 +64,13 @@ namespace SZEW.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            if (!_toolOrderRepository.ToolsOrderExists(orderId))
+            {
+                return BadRequest($"Tools order {orderId} is not valid");
+            }
 
             var toolMap = _mapper.Map<Tool>(toolCreate);
+            
             toolMap.Order = _toolOrderRepository.GetOrderById(orderId);
 
             try

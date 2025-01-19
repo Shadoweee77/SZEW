@@ -94,7 +94,15 @@ namespace SZEW.Controllers
             }
             // duplicate check could be added here maybe by VehicleId + description, idk if needed
             var workshopTaskMap = _mapper.Map<WorkshopTask>(workshopTaskCreate);
+            if (!_workshopJobRepository.WorkshopJobExists(WorkshopJobId))
+            {
+                return BadRequest($"Workshop Job {WorkshopJobId} is not valid");
+            }
             workshopTaskMap.WorkshopJob = _workshopJobRepository.GetJobById(WorkshopJobId);
+            if (!_userRepository.UserExists(AssignedWorkerId))
+            {
+                return BadRequest($"User {AssignedWorkerId} is not valid");
+            }
             workshopTaskMap.AssignedWorker = _userRepository.GetUserById(AssignedWorkerId);
 
             try

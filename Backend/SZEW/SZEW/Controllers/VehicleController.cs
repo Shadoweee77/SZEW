@@ -143,7 +143,10 @@ namespace SZEW.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            if (!_ownerRepository.ClientExists(OwnerId))
+            {
+                return BadRequest($"Workshop client {OwnerId} is not valid");
+            }
             var vehicleMap = _mapper.Map<Vehicle>(vehicleCreate);
             vehicleMap.Owner = _ownerRepository.GetClient(OwnerId);
 

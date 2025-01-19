@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using System.Security.Claims;
 using SZEW.DTO;
 using SZEW.Interfaces;
 using SZEW.Models;
@@ -65,14 +66,20 @@ namespace SZEW.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateToolOrder([FromQuery] int userId, [FromBody] CreateToolsOrderDto toolOrderCreate)
+        public IActionResult CreateToolOrder( [FromBody] CreateToolsOrderDto toolOrderCreate)
         {
             if (toolOrderCreate == null)
                 return BadRequest(ModelState);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var userIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Requester ID not found in the token.");
+            }
 
+            var userId = int.Parse(userIdClaim.Value);
             var toolOrderMap = _mapper.Map<ToolsOrder>(toolOrderCreate);
             toolOrderMap.Orderer = _userRepository.GetUserById(userId);
 

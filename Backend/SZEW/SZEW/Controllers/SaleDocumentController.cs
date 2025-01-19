@@ -79,6 +79,11 @@ namespace SZEW.Controllers
                 return Unauthorized("Requester ID not found in the token.");
             }
 
+            if (!_workshopJobRepository.WorkshopJobExists(relatedJobId))
+            {
+                return BadRequest($"Workshop Job {relatedJobId} is not valid");
+            }
+
             var issuerId = int.Parse(issuerIdClaim.Value);
             var saleDocumentMap = _mapper.Map<SaleDocument>(saleDocumentCreate);
             saleDocumentMap.DocumentIssuer = _issuerRepository.GetUserById(issuerId);
