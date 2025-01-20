@@ -155,5 +155,17 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
+        [HttpGet("{id}/exists")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(400)]
+        public IActionResult ToolsOrderExists(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest($"Tools order {id} is not valid");
+            }
+
+            return Ok(_toolsOrderRepository.ToolsOrderExists(id));
+        }
     }
 }

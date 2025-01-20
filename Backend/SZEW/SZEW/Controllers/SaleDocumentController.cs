@@ -52,7 +52,7 @@ namespace SZEW.Controllers
         }
         
 
-        [HttpGet("exists/{id}")]
+        [HttpGet("{id}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         public IActionResult SaleDocumentExists(int id)
         {
@@ -161,6 +161,7 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
+
 
     }
 }

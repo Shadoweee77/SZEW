@@ -140,5 +140,17 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
+        [HttpGet("{id}/exists")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(400)]
+        public IActionResult SparePartExists(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest($"Spare Part {id} is not valid");
+            }
+
+            return Ok(_sparePartRepository.SparePartExists(id));
+        }
     }
 }

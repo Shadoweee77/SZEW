@@ -49,7 +49,7 @@ namespace SZEW.Controllers
             return Ok(requestDto);
         }
            
-        [HttpGet("exists/{id}")]
+        [HttpGet("{id}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         public IActionResult ToolsRequestExists(int id)
         {
@@ -103,7 +103,7 @@ namespace SZEW.Controllers
             return Ok("Successfully created");
         }
 
-        [HttpPut("verify/{requestId}")]
+        [HttpPut("{requestId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]

@@ -143,5 +143,17 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
+        [HttpGet("{id}/exists")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(400)]
+        public IActionResult ToolExists(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest($"Tool {id} is not valid");
+            }
+
+            return Ok(_toolRepository.ToolExists(id));
+        }
     }
 }
