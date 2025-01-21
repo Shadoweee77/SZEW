@@ -26,9 +26,9 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<WorkshopClient>))]
-        public IActionResult GetClients()
+        public IActionResult GetAllWorkshopClients()
         {
-            var clients = _mapper.Map<List<WorkshopClientDto>>(_workshopClientRepository.GetClients());
+            var clients = _mapper.Map<List<WorkshopClientDto>>(_workshopClientRepository.GetAllWorkshopClients());
 
             if (!ModelState.IsValid)
             {
@@ -38,21 +38,21 @@ namespace SZEW.Controllers
             return Ok(clients);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{workshopClientId:int}")]
         [ProducesResponseType(200, Type = typeof(WorkshopClient))]
         [ProducesResponseType(400)]
-        public IActionResult GetClient(int id)
+        public IActionResult GetWorkshopClientById(int workshopClientId)
         {
-            if (!_workshopClientRepository.ClientExists(id))
+            if (!_workshopClientRepository.WorkshopClientExists(workshopClientId))
             {
                 return NotFound();
             }
 
-            var client = _mapper.Map<WorkshopClientDto>(_workshopClientRepository.GetClient(id));
+            var client = _mapper.Map<WorkshopClientDto>(_workshopClientRepository.GetWorkshopClientById(workshopClientId));
 
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Workshop Client {id} is not valid");
+                return BadRequest($"Workshop Client {workshopClientId} is not valid");
             }
 
             return Ok(client);
@@ -61,7 +61,7 @@ namespace SZEW.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(WorkshopClient))]
         [ProducesResponseType(400)]
-        public IActionResult CreateClient([FromBody] WorkshopClientDto clientDto)
+        public IActionResult CreateWorkshopClient([FromBody] WorkshopClientDto clientDto)
         {
             if (clientDto == null)
             {
@@ -92,7 +92,7 @@ namespace SZEW.Controllers
 
                 foreach (var vehicleId in clientDto.VehicleIds)
                 {
-                    var vehicle = _vehicleRepository.GetVehicle(vehicleId);
+                    var vehicle = _vehicleRepository.GetVehicleById(vehicleId);
                     if (vehicle != null)
                     {
                         individualClient.Vehicles.Add(vehicle);
@@ -123,7 +123,7 @@ namespace SZEW.Controllers
 
                 foreach (var vehicleId in clientDto.VehicleIds)
                 {
-                    var vehicle = _vehicleRepository.GetVehicle(vehicleId);
+                    var vehicle = _vehicleRepository.GetVehicleById(vehicleId);
                     if (vehicle != null)
                     {
                         businessClient.Vehicles.Add(vehicle);
@@ -145,26 +145,26 @@ namespace SZEW.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return CreatedAtAction(nameof(GetClient), new { id = clientToCreate.Id }, clientToCreate);
+            return CreatedAtAction(nameof(GetWorkshopClientById), new { id = clientToCreate.Id }, clientToCreate);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{workshopClientId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateClient(int id, [FromBody] WorkshopClientDto clientDto)
+        public IActionResult UpdateWorkshopClient(int workshopClientId, [FromBody] WorkshopClientDto clientDto)
         {
-            if (clientDto == null || id != clientDto.Id)
+            if (clientDto == null || workshopClientId != clientDto.Id)
             {
                 return BadRequest(ModelState);
             }
 
-            if (!_workshopClientRepository.ClientExists(id))
+            if (!_workshopClientRepository.WorkshopClientExists(workshopClientId))
             {
                 return NotFound();
             }
 
-            var existingClient = _workshopClientRepository.GetClient(id);
+            var existingClient = _workshopClientRepository.GetWorkshopClientById(workshopClientId);
 
             if (existingClient == null)
             {
@@ -186,6 +186,7 @@ namespace SZEW.Controllers
                     individualClient.Surname = clientDto.Surname;
                 }
             }
+
             else if (clientDto.ClientType == ClientType.Business)
             {
                 if (string.IsNullOrWhiteSpace(clientDto.NIP) || string.IsNullOrWhiteSpace(clientDto.BusinessName))
@@ -213,7 +214,7 @@ namespace SZEW.Controllers
             existingClient.Vehicles.Clear();
             foreach (var vehicleId in clientDto.VehicleIds)
             {
-                var vehicle = _vehicleRepository.GetVehicle(vehicleId);
+                var vehicle = _vehicleRepository.GetVehicleById(vehicleId);
                 if (vehicle != null)
                 {
                     existingClient.Vehicles.Add(vehicle);
@@ -231,18 +232,18 @@ namespace SZEW.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{workshopClientId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
-        public IActionResult DeleteClient(int id)
+        public IActionResult DeleteWorkshopClient(int workshopClientId)
         {
-            if (!_workshopClientRepository.ClientExists(id))
+            if (!_workshopClientRepository.WorkshopClientExists(workshopClientId))
             {
                 return NotFound();
             }
 
-            var clientToDelete = _workshopClientRepository.GetClient(id);
+            var clientToDelete = _workshopClientRepository.GetWorkshopClientById(workshopClientId);
 
             if (clientToDelete == null)
             {
@@ -260,43 +261,43 @@ namespace SZEW.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id}/vehicles")]
+        [HttpGet("{workshopClientId}/vehicles")]
         [ProducesResponseType(200, Type = typeof(ICollection<Vehicle>))]
         [ProducesResponseType(400)]
-        public IActionResult GetVehicles(int id)
+        public IActionResult GetWorkshopClientsVehicles(int workshopClientId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Workshop Client {id} is not valid");
+                return BadRequest($"Workshop Client {workshopClientId} is not valid");
             }
 
-            return Ok(_workshopClientRepository.GetVehicles(id));
+            return Ok(_workshopClientRepository.GetWorkshopClientsVehicles(workshopClientId));
         }
 
-        [HttpGet("{id}/type")]
+        [HttpGet("{workshopClientId}/type")]
         [ProducesResponseType(200, Type = typeof(ClientType))]
         [ProducesResponseType(400)]
-        public IActionResult GetClientType(int id)
+        public IActionResult GetWorkshopClientType(int workshopClientId)
         {
-            if (!ModelState.IsValid || !_workshopClientRepository.ClientExists(id))
+            if (!ModelState.IsValid || !_workshopClientRepository.WorkshopClientExists(workshopClientId))
             {
-                return BadRequest($"Workshop Client {id} is not valid");
+                return BadRequest($"Workshop Client {workshopClientId} is not valid");
             }
 
-            return Ok(_workshopClientRepository.GetClientType(id));
+            return Ok(_workshopClientRepository.GetWorkshopClientType(workshopClientId));
         }
 
-        [HttpGet("{id}/exists")]
+        [HttpGet("{workshopClientId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult ClientExists(int id)
+        public IActionResult WorkshopClientExists(int workshopClientId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Workshop Client {id} is not valid");
+                return BadRequest($"Workshop Client {workshopClientId} is not valid");
             }
 
-            return Ok(_workshopClientRepository.ClientExists(id));
+            return Ok(_workshopClientRepository.WorkshopClientExists(workshopClientId));
         }
     }
 }

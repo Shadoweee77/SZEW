@@ -13,12 +13,12 @@ namespace SZEW.Repository
             _context = context;
         }
 
-        public ICollection<ToolsRequest> GetAllRequests()
+        public ICollection<ToolsRequest> GetAllToolsRequests()
         {
             return _context.ToolsRequests.OrderBy(r => r.Id).ToList();
         }
 
-        public ToolsRequest GetRequestById(int id)
+        public ToolsRequest GetToolsRequestById(int id)
         {
             return _context.ToolsRequests.FirstOrDefault(r => r.Id == id);
         }
@@ -34,20 +34,20 @@ namespace SZEW.Repository
             return saved > 0 ? true : false;
         }
 
-        public bool CreateRequest(ToolsRequest request)
+        public bool CreateToolsRequest(ToolsRequest request)
         {
             _context.Add(request);
             return Save();
         }
 
-        public bool DeleteRequest(ToolsRequest request)
+        public bool DeleteToolsRequest(ToolsRequest request)
         {
             _context.Remove(request);
             return Save();
         }
 
 
-        public bool UpdateRequest(ToolsRequest request)
+        public bool UpdateToolsRequest(ToolsRequest request)
         {
             _context.ToolsRequests.Update(request);
             return Save();

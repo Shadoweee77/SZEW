@@ -4,12 +4,12 @@ namespace SZEW.Interfaces
 {
     public interface IToolsRequestRepository
     {
-        ICollection<ToolsRequest> GetAllRequests();
-        ToolsRequest GetRequestById(int id);
+        ICollection<ToolsRequest> GetAllToolsRequests();
+        ToolsRequest GetToolsRequestById(int id);
         bool ToolsRequestExists(int id);
-        bool CreateRequest(ToolsRequest request);
-        bool UpdateRequest(ToolsRequest request);
-        bool DeleteRequest(ToolsRequest request);
+        bool CreateToolsRequest(ToolsRequest request);
+        bool UpdateToolsRequest(ToolsRequest request);
+        bool DeleteToolsRequest(ToolsRequest request);
         bool Save();
     }
 }

@@ -4,11 +4,11 @@ namespace SZEW.Interfaces
 {
     public interface IWorkshopClientRepository
     {
-        ICollection<WorkshopClient> GetClients();
-        WorkshopClient GetClient(int id);
-        ICollection<Vehicle> GetVehicles(int ownerId);
-        ClientType GetClientType(int id);
-        bool ClientExists(int id);
+        ICollection<WorkshopClient> GetAllWorkshopClients();
+        WorkshopClient GetWorkshopClientById(int id);
+        ICollection<Vehicle> GetWorkshopClientsVehicles(int ownerId);
+        ClientType GetWorkshopClientType(int id);
+        bool WorkshopClientExists(int id);
         bool CreateWorkshopClient(WorkshopClient workshopClient);
         bool UpdateWorkshopClient(WorkshopClient workshopClient);
         bool DeleteWorkshopClient(WorkshopClient workshopClient);

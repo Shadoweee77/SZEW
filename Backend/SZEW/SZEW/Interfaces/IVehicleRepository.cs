@@ -4,9 +4,9 @@ namespace SZEW.Interfaces
 {
     public interface IVehicleRepository
     {
-        ICollection<Vehicle> GetVehicles();
-        Vehicle GetVehicle(int id);
-        Vehicle GetVehicle(string vin);
+        ICollection<Vehicle> GetAllVehicles();
+        Vehicle GetVehicleById(int id);
+        Vehicle GetVehicleByVIN(string vin);
         bool VehicleExists(int id);
         bool VehicleExists(string vin);
         bool CreateVehicle(Vehicle vehicle);

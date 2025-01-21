@@ -4,8 +4,8 @@ namespace SZEW.Interfaces
 {
     public interface IWorkshopTaskRepository
     {
-        ICollection<WorkshopTask> GetAllTasks();
-        WorkshopTask GetTaskById(int id);
+        ICollection<WorkshopTask> GetAllWorkshopTasks();
+        WorkshopTask GetWorkshopTaskById(int id);
         bool WorkshopTaskExists(int id);
         bool CreateWorkshopTask(WorkshopTask workshopTask);
         bool UpdateWorkshopTask(WorkshopTask workshopTask);

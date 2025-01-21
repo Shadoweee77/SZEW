@@ -4,8 +4,8 @@ namespace SZEW.Interfaces
 {
     public interface ISaleDocumentRepository
     {
-        ICollection<SaleDocument> GetAllDocuments();
-        SaleDocument GetDocumentById(int id);
+        ICollection<SaleDocument> GetAllSaleDocuments();
+        SaleDocument GetSaleDocumentById(int id);
         
         bool SaleDocumentExists(int id);
         bool CreateSaleDocument(SaleDocument saleDocument);

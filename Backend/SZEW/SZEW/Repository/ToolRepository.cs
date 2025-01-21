@@ -31,7 +31,7 @@ namespace SZEW.Repository
             return _context.Tools.Where(t => t.Id == id).Include(t => t.Order).FirstOrDefault();
         }
 
-        public ICollection<Tool> GetTools()
+        public ICollection<Tool> GetAllTools()
         {
             return _context.Tools.Include(t => t.Order).OrderBy(t => t.Id).ToList();
         }

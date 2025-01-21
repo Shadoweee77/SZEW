@@ -4,7 +4,7 @@ namespace SZEW.Interfaces
 {
     public interface IToolRepository
     {
-        ICollection<Tool> GetTools();
+        ICollection<Tool> GetAllTools();
         Tool GetToolById(int id);
         bool ToolExists(int id);
         bool CreateTool(Tool tool);

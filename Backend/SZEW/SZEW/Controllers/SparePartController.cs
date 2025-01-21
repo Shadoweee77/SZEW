@@ -28,7 +28,7 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<SparePart>))]
-        public IActionResult GetSpareParts()
+        public IActionResult GetAllSpareParts()
         {
             var spareParts = _mapper.Map<List<SparePartDto>>(_sparePartRepository.GetAllSpareParts());
 
@@ -38,15 +38,15 @@ namespace SZEW.Controllers
             return Ok(spareParts);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{sparePartId:int}")]
         [ProducesResponseType(200, Type = typeof(SparePart))]
         [ProducesResponseType(404)]
-        public IActionResult GetSparePartById(int id)
+        public IActionResult GetSparePartById(int sparePartId)
         {
-            if (!_sparePartRepository.SparePartExists(id))
+            if (!_sparePartRepository.SparePartExists(sparePartId))
                 return NotFound();
 
-            var sparePart = _mapper.Map<SparePartDto>(_sparePartRepository.GetSparePartById(id));
+            var sparePart = _mapper.Map<SparePartDto>(_sparePartRepository.GetSparePartById(sparePartId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -140,17 +140,17 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
-        [HttpGet("{id}/exists")]
+        [HttpGet("{sparePartId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult SparePartExists(int id)
+        public IActionResult SparePartExists(int sparePartId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Spare Part {id} is not valid");
+                return BadRequest($"Spare Part {sparePartId} is not valid");
             }
 
-            return Ok(_sparePartRepository.SparePartExists(id));
+            return Ok(_sparePartRepository.SparePartExists(sparePartId));
         }
     }
 }

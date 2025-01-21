@@ -25,12 +25,12 @@ namespace SZEW.Repository
             return Save();
         }
 
-        public ICollection<WorkshopJob> GetAllJobs()
+        public ICollection<WorkshopJob> GetAllWorkshopJobs()
         {
             return _context.Jobs.OrderBy(p => p.Id).ToList();
         }
 
-        public WorkshopJob GetJobById(int id)
+        public WorkshopJob GetWorkshopJobById(int id)
         {
             return _context.Jobs.Where(p => p.Id == id).FirstOrDefault();
         }

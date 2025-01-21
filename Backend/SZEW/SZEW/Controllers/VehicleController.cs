@@ -28,9 +28,9 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<Vehicle>))]
-        public IActionResult GetVehicles()
+        public IActionResult GetAllVehicles()
         {
-            var vehicles = _mapper.Map<List<VehicleDto>>(_vehicleRepository.GetVehicles());
+            var vehicles = _mapper.Map<List<VehicleDto>>(_vehicleRepository.GetAllVehicles());
 
             if (!ModelState.IsValid)
             {
@@ -40,21 +40,21 @@ namespace SZEW.Controllers
             return Ok(vehicles);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{vehicleId:int}")]
         [ProducesResponseType(200, Type = typeof(Vehicle))]
         [ProducesResponseType(400)]
-        public IActionResult GetVehicleByID(int id)
+        public IActionResult GetVehicleById(int vehicleId)
         {
-            if (!_vehicleRepository.VehicleExists(id))
+            if (!_vehicleRepository.VehicleExists(vehicleId))
             {
                 return NotFound();
             }
 
-            var vehicle = _mapper.Map<VehicleDto>(_vehicleRepository.GetVehicle(id));
+            var vehicle = _mapper.Map<VehicleDto>(_vehicleRepository.GetVehicleById(vehicleId));
 
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Vehicle {id} is not valid");
+                return BadRequest($"Vehicle {vehicleId} is not valid");
             }
 
             return Ok(vehicle);
@@ -70,7 +70,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var vehicle = _mapper.Map<VehicleDto>(_vehicleRepository.GetVehicle(vin));
+            var vehicle = _mapper.Map<VehicleDto>(_vehicleRepository.GetVehicleByVIN(vin));
 
             if (!ModelState.IsValid)
             {
@@ -80,17 +80,17 @@ namespace SZEW.Controllers
             return Ok(vehicle);
         }
 
-        [HttpGet("{id}/exists")]
+        [HttpGet("{vehicleId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult VehicleExists(int id)
+        public IActionResult VehicleExists(int vehicleId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Vehicle {id} is not valid");
+                return BadRequest($"Vehicle {vehicleId} is not valid");
             }
 
-            if (_vehicleRepository.VehicleExists(id))
+            if (_vehicleRepository.VehicleExists(vehicleId))
             {
                 return Ok(true);
             }
@@ -100,7 +100,7 @@ namespace SZEW.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateVehicle([FromQuery] int OwnerId, [FromBody] CreateVehicleDto vehicleCreate)
+        public IActionResult CreateVehicle([FromQuery] int ownerId, [FromBody] CreateVehicleDto vehicleCreate)
         {
             if (vehicleCreate == null)
             {
@@ -110,7 +110,7 @@ namespace SZEW.Controllers
             // Check for duplicate VIN
             if (!string.IsNullOrWhiteSpace(vehicleCreate.VIN))
             {
-                var existingVehicleByVIN = _vehicleRepository.GetVehicles()
+                var existingVehicleByVIN = _vehicleRepository.GetAllVehicles()
                     .FirstOrDefault(v =>
                         !string.IsNullOrWhiteSpace(vehicleCreate.VIN) &&
                         v.VIN != null &&
@@ -126,7 +126,7 @@ namespace SZEW.Controllers
             // Check for duplicate Registration Number
             if (!string.IsNullOrWhiteSpace(vehicleCreate.RegistrationNumber))
             {
-                var existingVehicleByReg = _vehicleRepository.GetVehicles()
+                var existingVehicleByReg = _vehicleRepository.GetAllVehicles()
                     .FirstOrDefault(v =>
                         !string.IsNullOrWhiteSpace(vehicleCreate.RegistrationNumber) &&
                         v.RegistrationNumber != null &&
@@ -143,16 +143,16 @@ namespace SZEW.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (!_ownerRepository.ClientExists(OwnerId))
+            if (!_ownerRepository.WorkshopClientExists(ownerId))
             {
-                return BadRequest($"Workshop client {OwnerId} is not valid");
+                return BadRequest($"Workshop client {ownerId} is not valid");
             }
             var vehicleMap = _mapper.Map<Vehicle>(vehicleCreate);
-            vehicleMap.Owner = _ownerRepository.GetClient(OwnerId);
+            vehicleMap.Owner = _ownerRepository.GetWorkshopClientById(ownerId);
 
             try
             {
-                var maxId = _vehicleRepository.GetVehicles().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _vehicleRepository.GetAllVehicles().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 vehicleMap.Id = maxId + 1;
 
                 if (!_vehicleRepository.CreateVehicle(vehicleMap))
@@ -182,8 +182,8 @@ namespace SZEW.Controllers
             if (!_vehicleRepository.VehicleExists(vehicleId))
                 return NotFound();
 
-            var existingVehicle = _vehicleRepository.GetVehicle(vehicleId);
-            existingVehicle.Owner = _ownerRepository.GetClient(updatedVehicle.OwnerId);
+            var existingVehicle = _vehicleRepository.GetVehicleById(vehicleId);
+            existingVehicle.Owner = _ownerRepository.GetWorkshopClientById(updatedVehicle.OwnerId);
             if (existingVehicle == null)
                 return NotFound();
 
@@ -210,7 +210,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var vehicleToDelete = _vehicleRepository.GetVehicle(vehicleId);
+            var vehicleToDelete = _vehicleRepository.GetVehicleById(vehicleId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -29,19 +29,19 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<ToolsRequestDto>))]
-        public IActionResult GetAllRequests()
+        public IActionResult GetAllToolsRequests()
         {
-            var requests = _toolsRequestRepository.GetAllRequests();
+            var requests = _toolsRequestRepository.GetAllToolsRequests();
             var requestsDto = _mapper.Map<List<ToolsRequestDto>>(requests);
             return Ok(requestsDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{toolsRequestId}")]
         [ProducesResponseType(200, Type = typeof(ToolsRequestDto))]
         [ProducesResponseType(404)]
-        public IActionResult GetRequestById(int id)
+        public IActionResult GetToolsRequestById(int toolsRequestId)
         {
-            var request = _toolsRequestRepository.GetRequestById(id);
+            var request = _toolsRequestRepository.GetToolsRequestById(toolsRequestId);
             if (request == null)
                 return NotFound();
 
@@ -49,11 +49,11 @@ namespace SZEW.Controllers
             return Ok(requestDto);
         }
            
-        [HttpGet("{id}/exists")]
+        [HttpGet("{toolsRequestId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
-        public IActionResult ToolsRequestExists(int id)
+        public IActionResult ToolsRequestExists(int toolsRequestId)
         {
-            return Ok(_toolsRequestRepository.ToolsRequestExists(id));
+            return Ok(_toolsRequestRepository.ToolsRequestExists(toolsRequestId));
         }
 
         [HttpPost]
@@ -85,10 +85,10 @@ namespace SZEW.Controllers
 
             try
             {
-                var maxId = _toolsRequestRepository.GetAllRequests().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _toolsRequestRepository.GetAllToolsRequests().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 requestMap.Id = maxId + 1;
 
-                if (!_toolsRequestRepository.CreateRequest(requestMap))
+                if (!_toolsRequestRepository.CreateToolsRequest(requestMap))
                 {
                     ModelState.AddModelError("", "Something went wrong while saving");
                     return StatusCode(500, ModelState);
@@ -103,17 +103,17 @@ namespace SZEW.Controllers
             return Ok("Successfully created");
         }
 
-        [HttpPut("{requestId}")]
+        [HttpPut("{toolsRequestId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateRequest(int requestId, [FromBody] UpdateToolsRequestDto updatedRequest)
+        public IActionResult UpdateToolsRequest(int toolsRequestId, [FromBody] UpdateToolsRequestDto updatedRequest)
         {
             if (updatedRequest == null)
                 return BadRequest(ModelState);
-            if (!_toolsRequestRepository.ToolsRequestExists(requestId))
+            if (!_toolsRequestRepository.ToolsRequestExists(toolsRequestId))
                 return NotFound();
-            var existingRequest = _toolsRequestRepository.GetRequestById(requestId);
+            var existingRequest = _toolsRequestRepository.GetToolsRequestById(toolsRequestId);
             if (existingRequest == null)
             {
                 return NotFound();
@@ -125,9 +125,9 @@ namespace SZEW.Controllers
             existingRequest.VerifierId = verifierId;
             _mapper.Map(updatedRequest, existingRequest);
 
-            if(requestId != existingRequest.Id)
+            if(toolsRequestId != existingRequest.Id)
                 return BadRequest(ModelState);
-            if (!_toolsRequestRepository.UpdateRequest(existingRequest))
+            if (!_toolsRequestRepository.UpdateToolsRequest(existingRequest))
             {
                 ModelState.AddModelError("", "Something went wrong verifying the request");
                 return StatusCode(500, ModelState);
@@ -136,23 +136,23 @@ namespace SZEW.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{requestId}")]
+        [HttpDelete("{toolsRequestId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteRequest(int requestId)
+        public IActionResult DeleteToolsRequest(int toolsRequestId)
         {
-            if (!_toolsRequestRepository.ToolsRequestExists(requestId))
+            if (!_toolsRequestRepository.ToolsRequestExists(toolsRequestId))
             {
                 return NotFound();
             }
 
-            var requestToDelete = _toolsRequestRepository.GetRequestById(requestId);
+            var requestToDelete = _toolsRequestRepository.GetToolsRequestById(toolsRequestId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_toolsRequestRepository.DeleteRequest(requestToDelete))
+            if (!_toolsRequestRepository.DeleteToolsRequest(requestToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting the request");
                 return StatusCode(500, ModelState);
@@ -160,6 +160,5 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
-
     }
 }

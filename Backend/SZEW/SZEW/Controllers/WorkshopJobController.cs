@@ -27,9 +27,9 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<WorkshopJob>))]
-        public IActionResult GetAllJobs()
+        public IActionResult GetAllWorkshopJobs()
         {
-            var jobs = _mapper.Map<List<WorkshopJobDto>>(_workshopJobRepository.GetAllJobs());
+            var jobs = _mapper.Map<List<WorkshopJobDto>>(_workshopJobRepository.GetAllWorkshopJobs());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -38,11 +38,11 @@ namespace SZEW.Controllers
             return Ok(jobs);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{workshopJobId}")]
         [ProducesResponseType(200, Type = typeof(WorkshopJob))]
-        public IActionResult GetJobById(int id)
+        public IActionResult GetWorkshopJobById(int workshopJobId)
         {
-            var job = _mapper.Map<WorkshopJobDto>(_workshopJobRepository.GetJobById(id));
+            var job = _mapper.Map<WorkshopJobDto>(_workshopJobRepository.GetWorkshopJobById(workshopJobId));
 
             if (!ModelState.IsValid)
             {
@@ -52,17 +52,17 @@ namespace SZEW.Controllers
             return Ok(job);
         }
 
-        [HttpGet("{id}/exists")]
+        [HttpGet("{workshopJobId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult WorkshopJobExists(int id)
+        public IActionResult WorkshopJobExists(int workshopJobId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Job {id} is not valid");
+                return BadRequest($"Job {workshopJobId} is not valid");
             }
 
-            if (_workshopJobRepository.WorkshopJobExists(id))
+            if (_workshopJobRepository.WorkshopJobExists(workshopJobId))
             {
                 return Ok(true);
             }
@@ -73,7 +73,7 @@ namespace SZEW.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
 
-        public IActionResult CreateWorkshopJob([FromQuery] int VehicleId, [FromBody] CreateWorkshopJobDto workshopJobCreate)
+        public IActionResult CreateWorkshopJob([FromQuery] int vehicleId, [FromBody] CreateWorkshopJobDto workshopJobCreate)
         {
             if (workshopJobCreate == null)
             {
@@ -85,17 +85,17 @@ namespace SZEW.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_vehicleRepository.VehicleExists(VehicleId))
+            if (!_vehicleRepository.VehicleExists(vehicleId))
             {
-                return BadRequest($"Vehicle {VehicleId} is not valid");
+                return BadRequest($"Vehicle {vehicleId} is not valid");
             }
             // duplicate check could be added here maybe by VehicleId + description, idk if needed
             var workshopJobMap = _mapper.Map<WorkshopJob>(workshopJobCreate);
-            workshopJobMap.Vehicle = _vehicleRepository.GetVehicle(VehicleId);
+            workshopJobMap.Vehicle = _vehicleRepository.GetVehicleById(vehicleId);
 
             try
             {
-                var maxId = _workshopJobRepository.GetAllJobs().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _workshopJobRepository.GetAllWorkshopJobs().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 workshopJobMap.Id = maxId + 1;
 
                 if (!_workshopJobRepository.CreateWorkshopJob(workshopJobMap))
@@ -111,6 +111,7 @@ namespace SZEW.Controllers
             }
             return Ok("Successfully created");
         }
+
         [HttpPut("{workshopJobId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -127,7 +128,7 @@ namespace SZEW.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var existingWorkshopJob = _workshopJobRepository.GetJobById(workshopJobId);
+            var existingWorkshopJob = _workshopJobRepository.GetWorkshopJobById(workshopJobId);
             _mapper.Map(updatedWorkshopJob, existingWorkshopJob);
 
             if(workshopJobId!= existingWorkshopJob.Id)
@@ -140,6 +141,7 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
+
         [HttpDelete("{workshopJobId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -151,7 +153,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var workshopJobToDelete = _workshopJobRepository.GetJobById(workshopJobId);
+            var workshopJobToDelete = _workshopJobRepository.GetWorkshopJobById(workshopJobId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -164,7 +166,5 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
-
-
     }
 }

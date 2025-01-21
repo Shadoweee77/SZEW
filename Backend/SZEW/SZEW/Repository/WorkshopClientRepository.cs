@@ -13,7 +13,7 @@ namespace SZEW.Repository
             this._context = context;
         }
 
-        public bool ClientExists(int id)
+        public bool WorkshopClientExists(int id)
         {
             return _context.Clients.Any(p => p.Id == id);
         }
@@ -30,22 +30,22 @@ namespace SZEW.Repository
             return Save();
         }
 
-        public WorkshopClient GetClient(int id)
+        public WorkshopClient GetWorkshopClientById(int id)
         {
             return _context.Clients.Where(p => p.Id == id).Include(client => client.Vehicles).FirstOrDefault();
         }
 
-        public ICollection<WorkshopClient> GetClients()
+        public ICollection<WorkshopClient> GetAllWorkshopClients()
         {
             return _context.Clients.Include(c => c.Vehicles).ToList().OrderBy(p => p.Id).ToList();
         }
 
-        public ClientType GetClientType(int id)
+        public ClientType GetWorkshopClientType(int id)
         {
             return _context.Clients.Where(p =>p.Id == id).Select(p => p.ClientType).FirstOrDefault();
         }
 
-        public ICollection<Vehicle> GetVehicles(int ownerId)
+        public ICollection<Vehicle> GetWorkshopClientsVehicles(int ownerId)
         {
             return _context.Vehicles.Where(p => p.Owner.Id == ownerId).ToList();
         }

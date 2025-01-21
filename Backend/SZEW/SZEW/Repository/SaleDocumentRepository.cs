@@ -14,12 +14,12 @@ namespace SZEW.Repository
             _context = context;
         }
 
-        public ICollection<SaleDocument> GetAllDocuments()
+        public ICollection<SaleDocument> GetAllSaleDocuments()
         {
             return _context.SaleDocuments.Include(SaleDocument => SaleDocument.RelatedJob).Include(SaleDocument => SaleDocument.DocumentIssuer).OrderBy(d => d.Id).ToList();
         }
 
-        public SaleDocument GetDocumentById(int id)
+        public SaleDocument GetSaleDocumentById(int id)
         {
             return _context.SaleDocuments.Include(SaleDocument => SaleDocument.RelatedJob).Include(SaleDocument => SaleDocument.DocumentIssuer).FirstOrDefault(d => d.Id == id);
         }

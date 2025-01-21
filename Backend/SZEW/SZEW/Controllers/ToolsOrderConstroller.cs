@@ -31,9 +31,9 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<ToolsOrderDto>))]
-        public IActionResult GetToolsOrders()
+        public IActionResult GetAllToolsOrders()
         {
-            var orders = _mapper.Map<List<ToolsOrderDto>>(_toolsOrderRepository.GetAllOrders());
+            var orders = _mapper.Map<List<ToolsOrderDto>>(_toolsOrderRepository.GetAllToolsOrders());
 
             if (!ModelState.IsValid)
             {
@@ -43,17 +43,17 @@ namespace SZEW.Controllers
             return Ok(orders);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{toolsOrderId:int}")]
         [ProducesResponseType(200, Type = typeof(ToolsOrderDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetToolsOrderById(int id)
+        public IActionResult GetToolsOrderById(int toolsOrderId)
         {
-            if (!_toolsOrderRepository.ToolsOrderExists(id))
+            if (!_toolsOrderRepository.ToolsOrderExists(toolsOrderId))
             {
                 return NotFound();
             }
 
-            var order = _mapper.Map<ToolsOrderDto>(_toolsOrderRepository.GetOrderById(id));
+            var order = _mapper.Map<ToolsOrderDto>(_toolsOrderRepository.GetToolsOrderById(toolsOrderId));
 
             if (!ModelState.IsValid)
             {
@@ -66,7 +66,7 @@ namespace SZEW.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateToolOrder( [FromBody] CreateToolsOrderDto toolOrderCreate)
+        public IActionResult CreateTooslOrder([FromBody] CreateToolsOrderDto toolOrderCreate)
         {
             if (toolOrderCreate == null)
                 return BadRequest(ModelState);
@@ -86,7 +86,7 @@ namespace SZEW.Controllers
             try
             {
                 // Manually set the ID based on the current max ID from the database
-                var maxId = _toolsOrderRepository.GetAllOrders().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _toolsOrderRepository.GetAllToolsOrders().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 toolOrderMap.Id = maxId + 1;
 
                 if (!_toolsOrderRepository.CreateToolsOrder(toolOrderMap))
@@ -103,20 +103,19 @@ namespace SZEW.Controllers
             return Ok("Successfully created");
         }
 
-
-        [HttpPut("{id}")]
+        [HttpPut("{toolsOrderId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateToolsOrder(int id, [FromBody] UpdateToolsOrderDto updatedOrder)
+        public IActionResult UpdateToolsOrder(int toolsOrderId, [FromBody] UpdateToolsOrderDto updatedOrder)
         {
             if (updatedOrder == null)
                 return BadRequest(ModelState);
 
-            if (!_toolsOrderRepository.ToolsOrderExists(id))
+            if (!_toolsOrderRepository.ToolsOrderExists(toolsOrderId))
                 return NotFound();
 
-            var existingOrder = _toolsOrderRepository.GetOrderById(id);
+            var existingOrder = _toolsOrderRepository.GetToolsOrderById(toolsOrderId);
             if (existingOrder == null)
                 return NotFound();
 
@@ -131,18 +130,18 @@ namespace SZEW.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{toolsOrderId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteToolsOrder(int id)
+        public IActionResult DeleteToolsOrder(int toolsOrderId)
         {
-            if (!_toolsOrderRepository.ToolsOrderExists(id))
+            if (!_toolsOrderRepository.ToolsOrderExists(toolsOrderId))
             {
                 return NotFound();
             }
 
-            var orderToDelete = _toolsOrderRepository.GetOrderById(id);
+            var orderToDelete = _toolsOrderRepository.GetToolsOrderById(toolsOrderId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -155,17 +154,18 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
-        [HttpGet("{id}/exists")]
+
+        [HttpGet("{toolsOrderId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult ToolsOrderExists(int id)
+        public IActionResult ToolsOrderExists(int toolsOrderId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Tools order {id} is not valid");
+                return BadRequest($"Tools order {toolsOrderId} is not valid");
             }
 
-            return Ok(_toolsOrderRepository.ToolsOrderExists(id));
+            return Ok(_toolsOrderRepository.ToolsOrderExists(toolsOrderId));
         }
     }
 }

@@ -26,7 +26,7 @@ namespace SZEW.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest model)
         {
-            var user = _userRepository.GetByLogin(model.Login);
+            var user = _userRepository.GetUserByLogin(model.Login);
             if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
             {
                 return Unauthorized("Invalid login or password");

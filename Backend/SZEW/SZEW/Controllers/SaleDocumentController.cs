@@ -31,19 +31,19 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<SaleDocumentDto>))]
-        public IActionResult GetAllDocuments()
+        public IActionResult GetAllSaleDocuments()
         {
-            var documents = _saleDocumentRepository.GetAllDocuments();
+            var documents = _saleDocumentRepository.GetAllSaleDocuments();
             var documentDtos = _mapper.Map<List<SaleDocumentDto>>(documents);
             return Ok(documentDtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{saleDocumentId}")]
         [ProducesResponseType(200, Type = typeof(SaleDocumentDto))]
         [ProducesResponseType(404)]
-        public IActionResult GetDocumentById(int id)
+        public IActionResult GetSaleDocumentById(int saleDocumentId)
         {
-            var document = _saleDocumentRepository.GetDocumentById(id);
+            var document = _saleDocumentRepository.GetSaleDocumentById(saleDocumentId);
             if (document == null)
                 return NotFound();
 
@@ -52,11 +52,11 @@ namespace SZEW.Controllers
         }
         
 
-        [HttpGet("{id}/exists")]
+        [HttpGet("{saleDocumentId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
-        public IActionResult SaleDocumentExists(int id)
+        public IActionResult SaleDocumentExists(int saleDocumentId)
         {
-            return Ok(_saleDocumentRepository.SaleDocumentExists(id));
+            return Ok(_saleDocumentRepository.SaleDocumentExists(saleDocumentId));
         }
 
         [HttpPost]
@@ -87,10 +87,10 @@ namespace SZEW.Controllers
             var issuerId = int.Parse(issuerIdClaim.Value);
             var saleDocumentMap = _mapper.Map<SaleDocument>(saleDocumentCreate);
             saleDocumentMap.DocumentIssuer = _issuerRepository.GetUserById(issuerId);
-            saleDocumentMap.RelatedJob = _workshopJobRepository.GetJobById(relatedJobId);
+            saleDocumentMap.RelatedJob = _workshopJobRepository.GetWorkshopJobById(relatedJobId);
             try
             {
-                var maxId = _saleDocumentRepository.GetAllDocuments().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _saleDocumentRepository.GetAllSaleDocuments().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 saleDocumentMap.Id = maxId + 1;
 
                 if (!_saleDocumentRepository.CreateSaleDocument(saleDocumentMap))
@@ -102,29 +102,30 @@ namespace SZEW.Controllers
             catch (DbUpdateException ex) when (ex.InnerException is PostgresException postgresEx && postgresEx.SqlState == "23505")
             {
                 ModelState.AddModelError("", "A sale document with the same ID already exists");
-                return StatusCode(409, ModelState); // HTTP 409 Conflict
+                return StatusCode(409, ModelState);
             }
 
             return Ok("Successfully created");
         }
-        [HttpPut("{SaleDocumentId}")]
+
+        [HttpPut("{saleDocumentId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateSaleDocument(int SaleDocumentId, [FromBody] CreateSaleDocumentDto updatedSaleDocument)
+        public IActionResult UpdateSaleDocument(int saleDocumentId, [FromBody] CreateSaleDocumentDto updatedSaleDocument)
         {
             if (updatedSaleDocument == null)
                 return BadRequest(ModelState);
 
-            if (!_saleDocumentRepository.SaleDocumentExists(SaleDocumentId))
+            if (!_saleDocumentRepository.SaleDocumentExists(saleDocumentId))
                 return NotFound();
 
-            var existingSaleDocument = _saleDocumentRepository.GetDocumentById(SaleDocumentId);
+            var existingSaleDocument = _saleDocumentRepository.GetSaleDocumentById(saleDocumentId);
             if (existingSaleDocument == null)
                 return NotFound();
 
             _mapper.Map(updatedSaleDocument, existingSaleDocument);
-            if (SaleDocumentId != existingSaleDocument.Id)
+            if (saleDocumentId != existingSaleDocument.Id)
                 return BadRequest(ModelState);
 
             if (!_saleDocumentRepository.UpdateSaleDocument(existingSaleDocument))
@@ -135,6 +136,7 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
+
         [HttpDelete("{saleDocumentId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -146,7 +148,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var saleDocumentToDelete = _saleDocumentRepository.GetDocumentById(saleDocumentId);
+            var saleDocumentToDelete = _saleDocumentRepository.GetSaleDocumentById(saleDocumentId);
 
             if (!ModelState.IsValid)
             {
@@ -161,7 +163,5 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
-
-
     }
 }

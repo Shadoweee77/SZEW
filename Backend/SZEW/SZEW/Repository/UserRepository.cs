@@ -6,7 +6,7 @@ namespace SZEW.Repository
 {
     public class UserRepository : IUserRepository
     {
-        public User GetByLogin(string login)
+        public User GetUserByLogin(string login)
         {
             return _context.Users.FirstOrDefault(u => u.Login == login);
         }
@@ -17,7 +17,7 @@ namespace SZEW.Repository
         {
             this._context = context;
         }
-        public ICollection<User> GetUsers()
+        public ICollection<User> GetAllUsers()
         {
             return _context.Users.OrderBy(p => p.Id).ToList();
         }

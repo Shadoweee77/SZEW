@@ -26,17 +26,17 @@ namespace SZEW.Repository
             return Save();
         }
 
-        public Vehicle GetVehicle(int id)
+        public Vehicle GetVehicleById(int id)
         {
             return _context.Vehicles.Where(p => p.Id == id).Include(vehicle => vehicle.Owner).FirstOrDefault();
         }
 
-        public Vehicle GetVehicle(string vin)
+        public Vehicle GetVehicleByVIN(string vin)
         {
             return _context.Vehicles.Where(p => p.VIN == vin).Include(vehicle => vehicle.Owner).FirstOrDefault();
         }
 
-        public ICollection<Vehicle> GetVehicles()
+        public ICollection<Vehicle> GetAllVehicles()
         {
             return _context.Vehicles.Include(v => v.Owner).OrderBy(p => p.Id).ToList();
 

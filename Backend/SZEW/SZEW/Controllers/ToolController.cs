@@ -28,9 +28,9 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<Tool>))]
-        public IActionResult GetTools()
+        public IActionResult GetAllTools()
         {
-            var tools = _mapper.Map<List<ToolDto>>(_toolRepository.GetTools());
+            var tools = _mapper.Map<List<ToolDto>>(_toolRepository.GetAllTools());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -38,15 +38,15 @@ namespace SZEW.Controllers
             return Ok(tools);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{toolId:int}")]
         [ProducesResponseType(200, Type = typeof(Tool))]
         [ProducesResponseType(404)]
-        public IActionResult GetToolById(int id)
+        public IActionResult GetToolById(int toolId)
         {
-            if (!_toolRepository.ToolExists(id))
+            if (!_toolRepository.ToolExists(toolId))
                 return NotFound();
 
-            var tool = _mapper.Map<ToolDto>(_toolRepository.GetToolById(id));
+            var tool = _mapper.Map<ToolDto>(_toolRepository.GetToolById(toolId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -71,12 +71,12 @@ namespace SZEW.Controllers
 
             var toolMap = _mapper.Map<Tool>(toolCreate);
             
-            toolMap.Order = _toolOrderRepository.GetOrderById(orderId);
+            toolMap.Order = _toolOrderRepository.GetToolsOrderById(orderId);
 
             try
             {
                 // Manually set the ID based on the current max ID from the database
-                var maxId = _toolRepository.GetTools().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _toolRepository.GetAllTools().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 toolMap.Id = maxId + 1;
 
                 if (!_toolRepository.CreateTool(toolMap))
@@ -143,17 +143,18 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
-        [HttpGet("{id}/exists")]
+
+        [HttpGet("{toolId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult ToolExists(int id)
+        public IActionResult ToolExists(int toolId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Tool {id} is not valid");
+                return BadRequest($"Tool {toolId} is not valid");
             }
 
-            return Ok(_toolRepository.ToolExists(id));
+            return Ok(_toolRepository.ToolExists(toolId));
         }
     }
 }

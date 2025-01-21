@@ -18,12 +18,12 @@ namespace SZEW.Repository
             return _context.Tasks.Any(p => p.Id == id);
         }
 
-        public ICollection<WorkshopTask> GetAllTasks()
+        public ICollection<WorkshopTask> GetAllWorkshopTasks()
         {
             return _context.Tasks.OrderBy(p => p.Id).ToList();
         }
 
-        public WorkshopTask GetTaskById(int id)
+        public WorkshopTask GetWorkshopTaskById(int id)
         {
             return _context.Tasks.Where(p => p.Id == id).FirstOrDefault();
         }

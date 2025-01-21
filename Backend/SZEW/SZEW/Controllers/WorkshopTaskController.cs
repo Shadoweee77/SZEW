@@ -30,9 +30,9 @@ namespace SZEW.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<WorkshopTask>))]
-        public IActionResult GetAllTasks()
+        public IActionResult GetAllWorkshopTasks()
         {
-            var tasks = _mapper.Map<List<WorkshopTaskDto>>(_workshopTaskRepository.GetAllTasks());
+            var tasks = _mapper.Map<List<WorkshopTaskDto>>(_workshopTaskRepository.GetAllWorkshopTasks());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -41,47 +41,47 @@ namespace SZEW.Controllers
             return Ok(tasks);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{workshopTaskId:int}")]
         [ProducesResponseType(200, Type = typeof(Vehicle))]
         [ProducesResponseType(400)]
-        public IActionResult GetTaskById(int id)
+        public IActionResult GetWorkshopTaskById(int workshopTaskId)
         {
-            if (!_workshopTaskRepository.WorkshopTaskExists(id))
+            if (!_workshopTaskRepository.WorkshopTaskExists(workshopTaskId))
             {
                 return NotFound();
             }
 
-            var task = _mapper.Map<WorkshopTaskDto>(_workshopTaskRepository.GetTaskById(id));
+            var task = _mapper.Map<WorkshopTaskDto>(_workshopTaskRepository.GetWorkshopTaskById(workshopTaskId));
 
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Task {id} is not valid");
+                return BadRequest($"Task {workshopTaskId} is not valid");
             }
 
             return Ok(task);
         }
 
-        [HttpGet("{id}/exists")]
+        [HttpGet("{workshopTaskId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult WorkshopTaskExists(int id)
+        public IActionResult WorkshopTaskExists(int workshopTaskId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"Vehicle {id} is not valid");
+                return BadRequest($"Workshop task with id {workshopTaskId} is not valid");
             }
 
-            if (_workshopTaskRepository.WorkshopTaskExists(id))
+            if (_workshopTaskRepository.WorkshopTaskExists(workshopTaskId))
             {
                 return Ok(true);
             }
             else return Ok(false);
         }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-
-        public IActionResult CreateWorkshopJob([FromQuery] int WorkshopJobId, [FromQuery] int AssignedWorkerId, [FromBody] CreateWorkshopTaskDto workshopTaskCreate)
+        public IActionResult CreateWorkshopJob([FromQuery] int workshopJobId, [FromQuery] int assignedWorkerId, [FromBody] CreateWorkshopTaskDto workshopTaskCreate)
         {
             if (workshopTaskCreate == null)
             {
@@ -94,20 +94,20 @@ namespace SZEW.Controllers
             }
             // duplicate check could be added here maybe by VehicleId + description, idk if needed
             var workshopTaskMap = _mapper.Map<WorkshopTask>(workshopTaskCreate);
-            if (!_workshopJobRepository.WorkshopJobExists(WorkshopJobId))
+            if (!_workshopJobRepository.WorkshopJobExists(workshopJobId))
             {
-                return BadRequest($"Workshop Job {WorkshopJobId} is not valid");
+                return BadRequest($"Workshop Job {workshopJobId} is not valid");
             }
-            workshopTaskMap.WorkshopJob = _workshopJobRepository.GetJobById(WorkshopJobId);
-            if (!_userRepository.UserExists(AssignedWorkerId))
+            workshopTaskMap.WorkshopJob = _workshopJobRepository.GetWorkshopJobById(workshopJobId);
+            if (!_userRepository.UserExists(assignedWorkerId))
             {
-                return BadRequest($"User {AssignedWorkerId} is not valid");
+                return BadRequest($"User {assignedWorkerId} is not valid");
             }
-            workshopTaskMap.AssignedWorker = _userRepository.GetUserById(AssignedWorkerId);
+            workshopTaskMap.AssignedWorker = _userRepository.GetUserById(assignedWorkerId);
 
             try
             {
-                var maxId = _workshopTaskRepository.GetAllTasks().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _workshopTaskRepository.GetAllWorkshopTasks().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 workshopTaskMap.Id = maxId + 1;
 
                 if (!_workshopTaskRepository.CreateWorkshopTask(workshopTaskMap))
@@ -123,6 +123,7 @@ namespace SZEW.Controllers
             }
             return Ok("Successfully created");
         }
+
         [HttpPut("{workshopTaskId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -139,7 +140,7 @@ namespace SZEW.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var existingWorkshopTask = _workshopTaskRepository.GetTaskById(workshopTaskId);
+            var existingWorkshopTask = _workshopTaskRepository.GetWorkshopTaskById(workshopTaskId);
             _mapper.Map(updatedWorkshopTask, existingWorkshopTask);
 
             if (workshopTaskId != existingWorkshopTask.Id)
@@ -152,6 +153,7 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
+
         [HttpDelete("{workshopTaskId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -163,7 +165,7 @@ namespace SZEW.Controllers
                 return NotFound();
             }
 
-            var workshopTaskToDelete = _workshopTaskRepository.GetTaskById(workshopTaskId);
+            var workshopTaskToDelete = _workshopTaskRepository.GetWorkshopTaskById(workshopTaskId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

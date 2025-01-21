@@ -27,9 +27,9 @@ namespace SZEW.Controllers
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<User>))]
-        public IActionResult GetUsers()
+        public IActionResult GetAllUsers()
         {
-            var users = _mapper.Map<List<UserDto>>(_userRepository.GetUsers());
+            var users = _mapper.Map<List<UserDto>>(_userRepository.GetAllUsers());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -39,38 +39,38 @@ namespace SZEW.Controllers
         }
 
         [Authorize(Policy = "AdminOnly")]
-        [HttpGet("{id:int}")]
+        [HttpGet("{userId:int}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
-        public IActionResult GetUserByID(int id)
+        public IActionResult GetUserById(int userId)
         {
-            if (!_userRepository.UserExists(id))
+            if (!_userRepository.UserExists(userId))
             {
                 return NotFound();
             }
 
-            var user = _mapper.Map<UserDto>(_userRepository.GetUserById(id));
+            var user = _mapper.Map<UserDto>(_userRepository.GetUserById(userId));
 
             if (!ModelState.IsValid)
             {
-                return BadRequest($"User {id} is not valid");
+                return BadRequest($"User {userId} is not valid");
             }
 
             return Ok(user);
         }
 
         [Authorize(Policy = "AdminOnly")]
-        [HttpGet("{id}/exists")]
+        [HttpGet("{userId}/exists")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
-        public IActionResult UserExists(int id)
+        public IActionResult UserExists(int userId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest($"User {id} is not valid");
+                return BadRequest($"User {userId} is not valid");
             }
 
-            if (_userRepository.UserExists(id))
+            if (_userRepository.UserExists(userId))
             {
                 return Ok(true);
             }
@@ -78,23 +78,23 @@ namespace SZEW.Controllers
         }
 
         [Authorize(Policy = "AdminOnly")]
-        [HttpGet("{id}/type")]
+        [HttpGet("{userId}/type")]
         [ProducesResponseType(200, Type = typeof(UserType))]
         [ProducesResponseType(400)]
-        public IActionResult GetUserType(int id)
+        public IActionResult GetUserType(int userId)
         {
-            if (!ModelState.IsValid || !_userRepository.UserExists(id))
+            if (!ModelState.IsValid || !_userRepository.UserExists(userId))
             {
-                return BadRequest($"User {id} is not valid");
+                return BadRequest($"User {userId} is not valid");
             }
 
-            return Ok(_userRepository.GetUserType(id));
+            return Ok(_userRepository.GetUserType(userId));
         }
 
         [HttpGet("profile")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(401)]
-        public IActionResult GetProfile()
+        public IActionResult GetUserProfile()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier); // userId should be stored as NameIdentifier
             if (userIdClaim == null)
@@ -131,7 +131,7 @@ namespace SZEW.Controllers
             try
             {
                 // Manually set the ID based on the current max ID from the database
-                var maxId = _userRepository.GetUsers().Select(v => v.Id).DefaultIfEmpty(0).Max();
+                var maxId = _userRepository.GetAllUsers().Select(v => v.Id).DefaultIfEmpty(0).Max();
                 userMap.Id = maxId + 1;
 
                 userMap.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userCreate.PlaintextPassword);
@@ -152,24 +152,24 @@ namespace SZEW.Controllers
         }
 
         [Authorize(Policy = "AdminOnly")]
-        [HttpPut("{UserId}")]
+        [HttpPut("{userId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateUser(int UserId, [FromBody] UpdateUserDto updatedUser)
+        public IActionResult UpdateUser(int userId, [FromBody] UpdateUserDto updatedUser)
         {
             if (updatedUser == null)
                 return BadRequest(ModelState);
 
-            if (!_userRepository.UserExists(UserId))
+            if (!_userRepository.UserExists(userId))
                 return NotFound();
 
-            var existingUser = _userRepository.GetUserById(UserId);
+            var existingUser = _userRepository.GetUserById(userId);
             if (existingUser == null)
                 return NotFound();
 
             _mapper.Map(updatedUser, existingUser);
-            if (UserId != existingUser.Id)
+            if (userId != existingUser.Id)
                 return BadRequest(ModelState);
 
             if (!_userRepository.UpdateUser(existingUser))
@@ -182,23 +182,23 @@ namespace SZEW.Controllers
         }
 
         [Authorize(Policy = "AdminOnly")]
-        [HttpDelete("{UserId}")]
+        [HttpDelete("{userId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteUser(int UserId)
+        public IActionResult DeleteUser(int userId)
         {
             /*
              * Przy usuwaniu usera pojawia się problem odwołań do inncyh obiektów, np ToolRequest.
              * Usuwanie kaskadowe nie jest dobrym rozwiązaniem ze względu na archiwizajcę, tak samo jak ustawiwanie NULLi. 
              * Warto rozważyć opcję zmiany usuwania na dezaktywowanie usera.
             */
-            if (!_userRepository.UserExists(UserId))
+            if (!_userRepository.UserExists(userId))
             {
                 return NotFound();
             }
 
-            var UserToDelete = _userRepository.GetUserById(UserId);
+            var UserToDelete = _userRepository.GetUserById(userId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -212,11 +212,11 @@ namespace SZEW.Controllers
         }
 
         [Authorize]
-        [HttpPut("{UserId}/changepassword")]
+        [HttpPut("{userId}/changepassword")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult ChangePassword(int UserId, [FromBody] PasswordUpdateUserDto updatedUser)
+        public IActionResult ChangePassword(int userId, [FromBody] PasswordUpdateUserDto updatedUser)
         {
             if (updatedUser == null)
                 return BadRequest(ModelState);
@@ -231,13 +231,13 @@ namespace SZEW.Controllers
             if (currentUser == null)
                 return Unauthorized("Current user not found.");
 
-            if (currentUserId != UserId && currentUser.UserType != UserType.Admin)
+            if (currentUserId != userId && currentUser.UserType != UserType.Admin)
                 return Unauthorized("You can only change your own password unless you're an admin.");
 
-            if (!_userRepository.UserExists(UserId))
+            if (!_userRepository.UserExists(userId))
                 return NotFound("User not found.");
 
-            var existingUser = _userRepository.GetUserById(UserId);
+            var existingUser = _userRepository.GetUserById(userId);
             if (existingUser == null)
                 return NotFound("User not found.");
 
@@ -256,6 +256,5 @@ namespace SZEW.Controllers
 
             return NoContent();
         }
-
     }
 }
