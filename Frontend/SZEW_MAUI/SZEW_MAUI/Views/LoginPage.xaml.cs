@@ -13,7 +13,7 @@ public partial class LoginPage : ContentPage
         if(userType == 1) {
             await Shell.Current.GoToAsync("/adminshell");
         }
-        else if(userType == 2) {
+        else if(userType == 0) {
             await Shell.Current.GoToAsync("/mechanicshell");
         }
         else {

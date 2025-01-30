@@ -8,7 +8,7 @@ public partial class LoadingPage : ContentPage
 	}
     protected override async void OnNavigatedTo(NavigatedToEventArgs args) {
         int usertype = API.loginStatus();
-        if(usertype == 2) {
+        if(usertype == 0) {
             await Shell.Current.GoToAsync("/mechanicshell");
         }
         else if(usertype == 1) {

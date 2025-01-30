@@ -93,17 +93,17 @@ namespace SZEW_MAUI {
             }
         }
         public static int loginStatus() {
-            //Return 0 if cannot log in,
+            //Return -1 if cannot log in,
             //1 if logged in as admin,
-            //2 if logged in as mechanic.
+            //0 if logged in as mechanic.
             if(login == null || password == null) {
                 if(!retrieveCredentials()) {
-                    return 0;
+                    return -1;
                 }
             }
             if(token == null) {
                 if(!retrieveToken()) {
-                    return 0;
+                    return -1;
                 }
             }
             var request = new RestRequest("User/profile", Method.Get);
@@ -123,10 +123,10 @@ namespace SZEW_MAUI {
                         }
                     }
                 }
-                return 0;
+                return -1;
             }
             catch {
-                return 0;
+                return -1;
             }
         }
     }
