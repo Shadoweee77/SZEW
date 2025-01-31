@@ -4,9 +4,46 @@
              x:Class="SZEW_MAUI.Views.UsersPage"
              Title="Użytkownicy">
     <VerticalStackLayout>
-        <Label 
-            Text="Użytkownicy"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        <Label x:Name="errorMessage" IsVisible="False" Text="Błąd pobierania listy użytkowników" />
+        <ListView x:Name="usersListView" SelectionMode="None">
+            <ListView.Header>
+                <Grid Padding="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label FontAttributes="Bold" Text="ID" />
+                    <Label FontAttributes="Bold" Grid.Column="1" Text="Imię" />
+                    <Label FontAttributes="Bold" Grid.Column="2" Text="Nazwisko" />
+                    <Label FontAttributes="Bold" Grid.Column="3" Text="Typ" />
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding id}" />
+                            <Label Grid.Column="1" Text="{Binding name}" />
+                            <Label Grid.Column="2" Text="{Binding surname}" />
+                            <Label Grid.Column="3" Text="{Binding typeName}" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </VerticalStackLayout>
 </ContentPage>

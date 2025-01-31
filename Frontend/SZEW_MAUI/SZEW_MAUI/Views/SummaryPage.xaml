@@ -5,7 +5,7 @@
              Title="Generuj zestawienie">
     <VerticalStackLayout>
         <Label 
-            Text="Welcome to .NET MAUI!"
+            Text="Generuj zestawienie"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>

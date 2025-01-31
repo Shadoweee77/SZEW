@@ -5,7 +5,7 @@
              Title="Rejestruj zamówienie części">
     <VerticalStackLayout>
         <Label 
-            Text="Welcome to .NET MAUI!"
+            Text="Rejestruj zamówienie części"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>

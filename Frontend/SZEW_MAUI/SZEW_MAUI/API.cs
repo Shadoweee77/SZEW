@@ -129,5 +129,26 @@ namespace SZEW_MAUI {
                 return -1;
             }
         }
+        public static List<User> getUserList() {
+            var request = new RestRequest("User", Method.Get);
+            var client = new RestClient(address);
+            request.AddHeader("Authorization", "Bearer " + token);
+            try {
+                var executeTask = client.ExecuteAsync(request);
+                if(executeTask.Wait(1000)) {
+                    var response = executeTask.Result;
+                    if(response != null) {
+                        if(response.StatusCode == System.Net.HttpStatusCode.OK && response.Content != null) {
+                            return JsonSerializer.Deserialize<List<User>>(response.Content);
+                        }
+                    }
+                    return null;
+                }
+                return null;
+            }
+            catch {
+                return null;
+            }
+        }
     }
 }

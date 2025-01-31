@@ -3,19 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SZEW_MAUI.Views.LoginPage"
              Title="Zaloguj się">
-    <VerticalStackLayout Padding="10" VerticalOptions="Center" HorizontalOptions="Center">
-        <VerticalStackLayout Padding="10">
-            <HorizontalStackLayout>
-                <Label Text="Username"/>
-                <Entry x:Name="Username" Placeholder="Username">
-                </Entry>
-            </HorizontalStackLayout>
-            <HorizontalStackLayout>
-                <Label Text="Password"/>
-                <Entry x:Name="Password" Placeholder="Password" IsPassword="True" FontSize="18">
-                </Entry>
-            </HorizontalStackLayout>
-            <Button x:Name="LoginButton" Clicked="LoginButton_Clicked" Text="Login" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand"/>
-        </VerticalStackLayout>
-    </VerticalStackLayout>
+    <Grid Padding="50" RowSpacing="5" ColumnSpacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Label HorizontalOptions="Center" VerticalOptions="Center" Text="Username"/>
+        <Entry HorizontalOptions="Fill" VerticalOptions="Center" Grid.Column="1" x:Name="Username" Placeholder="Username" />
+        <Label HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1" Text="Password"/>
+        <Entry HorizontalOptions="Fill" VerticalOptions="Center" Grid.Row="1" Grid.Column="1" x:Name="Password" Placeholder="Password" IsPassword="True" />
+        <Button HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="2" Grid.ColumnSpan="2" x:Name="LoginButton" Clicked="LoginButton_Clicked" Text="Login" />
+    </Grid>
 </ContentPage>

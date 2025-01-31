@@ -5,7 +5,7 @@
              Title="Zgłoś zapotrzebowanie na narzędzia">
     <VerticalStackLayout>
         <Label 
-            Text="Welcome to .NET MAUI!"
+            Text="Zgłoś zapotrzebowanie na narzędzia"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>
